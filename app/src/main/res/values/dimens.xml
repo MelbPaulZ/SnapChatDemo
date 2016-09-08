@@ -4,4 +4,10 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="title_size">20dp</dimen>
     <dimen name="text_size">14dp</dimen>
+    <dimen name="single_line_height">60dp</dimen>
+    <dimen name="single_line_subtitle_height">12dp</dimen>
+    <dimen name="padding_10dp">10dp</dimen>
+    <dimen name="icon_width_15dp">15dp</dimen>
+    <dimen name="subtitle_size_8dp">8dp</dimen>
+    <dimen name="padding_minus_5dp">-5dp</dimen>
 </resources>

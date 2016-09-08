@@ -1,28 +1,33 @@
 package com.example.paul.snapchatdemo;
 
-import android.graphics.Color;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.ListView;
+
+import com.example.paul.snapchatdemo.Helpers.Friend;
+import com.example.paul.snapchatdemo.Helpers.FriendAdapter;
 
 import java.util.ArrayList;
 
 /**
  * Created by Paul on 24/08/2016.
  */
-public class FragmentContactList extends Fragment {
+public class FragmentContactList extends Fragment implements SearchView.OnQueryTextListener{
     private View root;
 
-    private ArrayList<String> friendArrayList = new ArrayList<>();
+//    private ArrayList<String> friendArrayList = new ArrayList<>();
 
+    private FriendAdapter friendArrayAdapter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,56 +41,55 @@ public class FragmentContactList extends Fragment {
         init();
     }
 
-    public void init(){
-        LinearLayout linearLayout = (LinearLayout) root.findViewById(R.id.scrollview_linear_layout);
-        linearLayout.setPadding(10,0,10,0);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem searchMenuItem;
+        SearchView searchView;
+        MenuInflater myInflater = getActivity().getMenuInflater();
+        myInflater.inflate(R.menu.search_menu, menu);
 
-        for (String name:friendArrayList){
-            RelativeLayout nameSlot = new RelativeLayout(getContext());
-            RelativeLayout.LayoutParams nameSlotParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 150);
-            nameSlot.setLayoutParams(nameSlotParams);
-            nameSlot.setBackground(getResources().getDrawable(R.drawable.table_row_border));
+        SearchManager searchManager = (SearchManager)
+                getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchMenuItem = menu.findItem(R.id.search);
+        searchView = (SearchView) searchMenuItem.getActionView();
 
-            TextView textView = new TextView(getContext());
-            textView.setText(name);
-            textView.setTextSize(20);
-            RelativeLayout.LayoutParams textViewLayoutParams = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            textViewLayoutParams.setMargins(10+100,20,0,0);
-            textView.setLayoutParams(textViewLayoutParams);
-            textView.setGravity(Gravity.CENTER_VERTICAL);
-
-            TextView status = new TextView(getContext());
-            status.setText("last update in a minute ago");
-            status.setTextSize(10);
-            status.setTextColor(Color.GRAY);
-            RelativeLayout.LayoutParams statusLayout = new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            statusLayout.setMargins(10+100, 90, 0 ,0);
-            status.setLayoutParams(statusLayout);
-
-            ImageView icon = new ImageView(getContext());
-            RelativeLayout.LayoutParams iconParams = new RelativeLayout.LayoutParams(80,100);
-            iconParams.setMargins(10,20,0,0);
-            icon.setLayoutParams(iconParams);
-            icon.setImageResource(R.drawable.arrow);
-
-            ImageView genderIcon = new ImageView(getContext());
-            RelativeLayout.LayoutParams genderIconParams = new RelativeLayout.LayoutParams(50,50);
-            genderIconParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            genderIconParams.addRule(RelativeLayout.CENTER_VERTICAL);
-            genderIcon.setLayoutParams(genderIconParams);
-            genderIcon.setImageResource(R.drawable.female);
-
-            nameSlot.addView(textView);
-            nameSlot.addView(status);
-            nameSlot.addView(icon);
-            nameSlot.addView(genderIcon);
-            linearLayout.addView(nameSlot);
-        }
+        searchView.setSearchableInfo(searchManager.
+                getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
     }
-    public void setNames(ArrayList<String> nameArrayList){
-        this.friendArrayList = nameArrayList;
+
+
+
+    public void init(){
+        ListView contactList = (ListView) root.findViewById(R.id.contact_list);
+
+        // simulate an arrayList data
+        ArrayList<Friend> simuArrayList = new ArrayList<>();
+        for(int i = 0 ; i < 5 ; i ++) {
+            simuArrayList.add(new Friend("Paul","message me","male"));
+            simuArrayList.add(new Friend("William","I am having lunch","male"));
+            simuArrayList.add(new Friend("Verra","coding now","female"));
+            simuArrayList.add(new Friend("Aaron","lecturing, busy","male"));
+            simuArrayList.add(new Friend("Brad Peter","guess where I am"));
+        }
+
+        friendArrayAdapter = new FriendAdapter(getContext(), R.layout.contact_single_line_view, simuArrayList);
+        contactList.setAdapter(friendArrayAdapter);
+
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        friendArrayAdapter.getFilter().filter(newText);
+
+        return false;
     }
 
 }

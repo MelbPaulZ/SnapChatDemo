@@ -4,7 +4,8 @@
     android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="?attr/colorPrimary">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,14 +37,21 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#ff00ff"
                     android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/discover_image1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
                 </RelativeLayout>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#fff00f"
                     android:layout_weight="1">
+                    <ImageView
+                        android:id="@+id/discover_image2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
                 </RelativeLayout>
             </LinearLayout>
             <LinearLayout
@@ -56,6 +64,10 @@
                     android:layout_height="match_parent"
                     android:background="#a00fff"
                     android:layout_weight="3">
+                    <ImageView
+                        android:id="@+id/discover_image3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
                 </RelativeLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
