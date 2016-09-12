@@ -36,10 +36,28 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         init();
+
+        SearchManager searchManager = (SearchManager)
+                getActivity().getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) root.findViewById(R.id.search_view);
+        searchView.setSearchableInfo(searchManager.
+                getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
+
     }
+
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -57,7 +75,10 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
                 getSearchableInfo(getActivity().getComponentName()));
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
     }
+
+
 
 
 
@@ -77,6 +98,21 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
         friendArrayAdapter = new FriendAdapter(getContext(), R.layout.contact_single_line_view, simuArrayList);
         contactList.setAdapter(friendArrayAdapter);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.menu.search_menu:
+
+                // Do Fragment menu item stuff here
+                return true;
+
+            default:
+                break;
+        }
+
+        return false;
     }
 
 

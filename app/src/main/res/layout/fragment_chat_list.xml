@@ -5,7 +5,8 @@
     android:layout_height="match_parent">
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="?attr/colorPrimary">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,8 +30,10 @@
                 android:text="right"/>
     </android.support.v7.widget.Toolbar>
     <android.support.v7.widget.SearchView
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="?attr/colorPrimary">
     </android.support.v7.widget.SearchView>
     <ListView
         android:id="@+id/contact_list"

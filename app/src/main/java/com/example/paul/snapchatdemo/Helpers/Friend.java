@@ -7,6 +7,7 @@ public class Friend implements People {
     private String name;
     private String status;
     private String gender;
+    private String DOB;
     // need to implement more, need discuss
 
     public Friend(String name) {

@@ -33,5 +33,6 @@
         android:layout_height="wrap_content"
         android:text="this is stories"
         android:textSize="40dp"/>
+    
 
 </LinearLayout>
