@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.example.paul.snapchatdemo.Helpers.Friend;
-import com.example.paul.snapchatdemo.Helpers.FriendAdapter;
+import com.example.paul.snapchatdemo.helpers.Friend;
+import com.example.paul.snapchatdemo.helpers.FriendAdapter;
 
 import java.util.ArrayList;
 

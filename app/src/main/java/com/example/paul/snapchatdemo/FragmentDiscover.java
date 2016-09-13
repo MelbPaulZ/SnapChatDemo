@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by Paul on 24/08/2016.
@@ -45,14 +46,15 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
     public void initDiscovers(){
         String url1 ="http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg" ;
         ImageView imageView1 = (ImageView) root.findViewById(R.id.discover_image1);
-        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-        imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
-        imageLoader.displayImage(url1, imageView1);
+//        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
+//        imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
+//        imageLoader.displayImage(url1, imageView1);
+        Picasso.with(getContext()).load(url1).into(imageView1);
         imageView1.setOnClickListener(this);
 
         String url2 = "http://rter.info/image.php?iso=AUD&name=1-8cc9325417c87e4405fe57b8f371582c";
         ImageView imageView2 = (ImageView) root.findViewById(R.id.discover_image2);
-        imageLoader.displayImage(url2, imageView2);
+        Picasso.with(getContext()).load(url2).into(imageView2);
         imageView2.setOnClickListener(this);
     }
 

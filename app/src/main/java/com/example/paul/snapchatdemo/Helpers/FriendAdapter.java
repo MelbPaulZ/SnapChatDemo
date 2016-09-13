@@ -1,4 +1,4 @@
-package com.example.paul.snapchatdemo.Helpers;
+package com.example.paul.snapchatdemo.helpers;
 
 import android.content.Context;
 import android.view.LayoutInflater;

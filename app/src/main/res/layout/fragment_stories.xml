@@ -1,38 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="?attr/colorPrimary">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_gravity="left"
-            android:text="Camera"/>
+            android:text="Camera" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
+            android:gravity="center"
             android:text="Stories"
             android:textSize="@dimen/title_size" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_gravity="right"
             android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:text="Discover"/>
+            android:text="Discover" />
     </android.support.v7.widget.Toolbar>
+
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="?attr/colorPrimary"
+        android:text="Recommend topics"
+        android:textColor="@color/color_b2b2b2"
+        android:textSize="20dp" />
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="80dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/stories_image1"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@color/color_b2b2b2" />
+
+            <ImageView
+                android:id="@+id/stories_image2"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#ff00ff" />
+
+            <ImageView
+                android:id="@+id/stories_image3"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#f0000f" />
+
+            <ImageView
+                android:id="@+id/stories_image4"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#88ff0f" />
+
+            <ImageView
+                android:id="@+id/image_5"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#f000f9" />
+
+            <ImageView
+                android:id="@+id/image_6"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#7f82" />
+
+            <ImageView
+                android:id="@+id/image_7"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#9f01" />
+
+            <ImageView
+                android:id="@+id/image_8"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#8f9" />
+
+            <ImageView
+                android:id="@+id/image_9"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="#000fff" />
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="this is stories"
-        android:textSize="40dp"/>
-    
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?attr/colorPrimary"
+                android:text="Subscriptions"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+            <com.example.paul.snapchatdemo.widgets.NonScrollListView
+                android:id="@+id/subscription_listview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </com.example.paul.snapchatdemo.widgets.NonScrollListView>
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?attr/colorPrimary"
+                android:text="Friend Stories"
+                android:textAlignment="center"
+                android:textSize="20sp"/>
+
+            <com.example.paul.snapchatdemo.widgets.NonScrollListView
+                android:id="@+id/friend_stories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </com.example.paul.snapchatdemo.widgets.NonScrollListView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 
 </LinearLayout>
