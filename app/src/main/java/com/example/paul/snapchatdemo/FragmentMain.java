@@ -18,9 +18,10 @@ import java.util.ArrayList;
 public class FragmentMain extends Fragment {
 
     private ArrayList<Fragment> fragments = new ArrayList<>();
-    FragmentDiscover fragmentDiscover;
-    FragmentContactList fragmentContactList;
-    FragmentStories fragmentStories;
+    private FragmentDiscover fragmentDiscover;
+    private FragmentContactList fragmentContactList;
+    private FragmentStories fragmentStories;
+    private ViewPager viewPager;
 
     private View root;
     @Nullable
@@ -41,14 +42,14 @@ public class FragmentMain extends Fragment {
         fragmentDiscover = new FragmentDiscover();
         fragmentContactList = new FragmentContactList();
         fragmentStories = new FragmentStories();
-        
+
         //put the fragment in the arrayList, so can use view pager to slide
         fragments.add(fragmentContactList);
         fragments.add(fragmentStories);
         fragments.add(fragmentDiscover);
 
 
-        ViewPager viewPager = (ViewPager) root.findViewById(R.id.main_view_pager);
+        viewPager= (ViewPager) root.findViewById(R.id.main_view_pager);
 
         FragmentPagerAdapter fragmentPagerAdapter = new FragmentPagerAdapter(this.getFragmentManager()) {
             @Override
@@ -62,5 +63,9 @@ public class FragmentMain extends Fragment {
             }
         };
         viewPager.setAdapter(fragmentPagerAdapter);
+    }
+
+    public ViewPager getViewPager(){
+        return this.viewPager;
     }
 }

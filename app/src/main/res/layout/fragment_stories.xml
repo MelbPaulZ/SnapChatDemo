@@ -34,78 +34,6 @@
             android:text="Discover" />
     </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:background="?attr/colorPrimary"
-        android:text="Recommend topics"
-        android:textColor="@color/color_b2b2b2"
-        android:textSize="20dp" />
-
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="80dp">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/stories_image1"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@color/color_b2b2b2" />
-
-            <ImageView
-                android:id="@+id/stories_image2"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#ff00ff" />
-
-            <ImageView
-                android:id="@+id/stories_image3"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#f0000f" />
-
-            <ImageView
-                android:id="@+id/stories_image4"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#88ff0f" />
-
-            <ImageView
-                android:id="@+id/image_5"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#f000f9" />
-
-            <ImageView
-                android:id="@+id/image_6"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#7f82" />
-
-            <ImageView
-                android:id="@+id/image_7"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#9f01" />
-
-            <ImageView
-                android:id="@+id/image_8"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#8f9" />
-
-            <ImageView
-                android:id="@+id/image_9"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="#000fff" />
-        </LinearLayout>
-    </HorizontalScrollView>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -113,37 +41,114 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
+            <SearchView
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="?attr/colorPrimary"
-                android:text="Subscriptions"
-                android:textAlignment="center"
-                android:textSize="20sp" />
+                android:layout_height="40dp">
+            </SearchView>
 
-            <com.example.paul.snapchatdemo.widgets.NonScrollListView
-                android:id="@+id/subscription_listview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </com.example.paul.snapchatdemo.widgets.NonScrollListView>
-            
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:background="?attr/colorPrimary"
                 android:text="Friend Stories"
                 android:textAlignment="center"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
-            <com.example.paul.snapchatdemo.widgets.NonScrollListView
+            <com.example.paul.snapchatdemo.widgets.ExpandedListView
                 android:id="@+id/friend_stories"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </com.example.paul.snapchatdemo.widgets.NonScrollListView>
+                android:layout_height="match_parent"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="?attr/colorPrimary"
+                android:text="Recommend topics"
+                android:textAlignment="center"
+                android:textSize="20dp" />
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="80dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/stories_image1"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp" />
+
+                    <ImageView
+                        android:id="@+id/stories_image2"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"/>
+
+                    <ImageView
+                        android:id="@+id/stories_image3"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="#f0000f" />
+
+                    <ImageView
+                        android:id="@+id/stories_image4"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="#88ff0f" />
+
+                    <ImageView
+                        android:id="@+id/stories_image5"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="#f000f9" />
+
+                    <ImageView
+                        android:id="@+id/stories_image6"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="#7f82" />
+
+                    <ImageView
+                        android:id="@+id/stories_image7"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="#9f01" />
+
+                    <ImageView
+                        android:id="@+id/stories_image8"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:background="#8f9" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="?attr/colorPrimary"
+                    android:text="Subscriptions"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+
+                <HorizontalScrollView
+                    android:id="@+id/subscription_horizontal_scrollview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/subscription_content_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:orientation="horizontal">
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+            </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
-
-
 </LinearLayout>

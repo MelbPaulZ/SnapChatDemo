@@ -8,6 +8,7 @@
         android:layout_height="50dp"
         android:background="?attr/colorPrimary">
             <TextView
+                android:id="@+id/contact_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
@@ -22,6 +23,7 @@
                 android:text="Chat"
                 android:textSize="@dimen/title_size" />
             <TextView
+                android:id="@+id/contact_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"

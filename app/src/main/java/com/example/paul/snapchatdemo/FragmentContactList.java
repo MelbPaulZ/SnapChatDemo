@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,16 +14,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.helpers.Friend;
-import com.example.paul.snapchatdemo.helpers.FriendAdapter;
+import com.example.paul.snapchatdemo.adapters.FriendAdapter;
+import com.example.paul.snapchatdemo.helpers.OnPageSlideListener;
 
 import java.util.ArrayList;
 
 /**
  * Created by Paul on 24/08/2016.
  */
-public class FragmentContactList extends Fragment implements SearchView.OnQueryTextListener{
+public class FragmentContactList extends Fragment implements SearchView.OnQueryTextListener, OnPageSlideListener{
     private View root;
 
 //    private ArrayList<String> friendArrayList = new ArrayList<>();
@@ -45,6 +48,7 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         init();
+        initListener();
 
         SearchManager searchManager = (SearchManager)
                 getActivity().getSystemService(Context.SEARCH_SERVICE);
@@ -53,7 +57,16 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
                 getSearchableInfo(getActivity().getComponentName()));
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
+    }
 
+    public void initListener(){
+        TextView right = (TextView) root.findViewById(R.id.contact_right);
+        right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveNext();
+            }
+        });
     }
 
 
@@ -128,4 +141,14 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
         return false;
     }
 
+    @Override
+    public void moveNext() {
+        ViewPager viewPager = ((MainActivity)getActivity()).getFragmentMain().getViewPager();
+        viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
+    }
+
+    @Override
+    public void movePrevious() {
+        // do nothing, it is the most left one
+    }
 }

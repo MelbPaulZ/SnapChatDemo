@@ -1,4 +1,4 @@
-package com.example.paul.snapchatdemo.helpers;
+package com.example.paul.snapchatdemo.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.helpers.Friend;
 
 import java.util.ArrayList;
 import java.util.List;
