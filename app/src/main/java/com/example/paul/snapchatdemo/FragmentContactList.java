@@ -16,8 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.paul.snapchatdemo.helpers.Friend;
+import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.adapters.FriendAdapter;
+import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.helpers.OnPageSlideListener;
 
 import java.util.ArrayList;

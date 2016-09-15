@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
-import com.example.paul.snapchatdemo.helpers.Friend;
+import com.example.paul.snapchatdemo.bean.Friend;
 
 import java.util.ArrayList;
 import java.util.List;

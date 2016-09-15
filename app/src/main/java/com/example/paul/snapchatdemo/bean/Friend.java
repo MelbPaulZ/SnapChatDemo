@@ -1,4 +1,6 @@
-package com.example.paul.snapchatdemo.helpers;
+package com.example.paul.snapchatdemo.bean;
+
+import com.example.paul.snapchatdemo.bean.People;
 
 /**
  * Created by Paul on 7/09/2016.
