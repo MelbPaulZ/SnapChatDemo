@@ -1,15 +1,10 @@
-package com.example.paul.snapchatdemo;
+package com.example.paul.snapchatdemo.activity;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
 
-import java.util.ArrayList;
+import com.example.paul.snapchatdemo.fragment.FragmentMain;
+import com.example.paul.snapchatdemo.R;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentMain fragmentMain;

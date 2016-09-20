@@ -1,4 +1,4 @@
-package com.example.paul.snapchatdemo;
+package com.example.paul.snapchatdemo.fragment;
 
 
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.paul.snapchatdemo.R;
 
 import java.util.ArrayList;
 

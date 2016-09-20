@@ -1,4 +1,4 @@
-package com.example.paul.snapchatdemo;
+package com.example.paul.snapchatdemo.fragment;
 
 
 import android.app.ActivityOptions;
@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.paul.snapchatdemo.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.picasso.Picasso;

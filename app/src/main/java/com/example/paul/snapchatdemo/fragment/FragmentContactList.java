@@ -1,4 +1,4 @@
-package com.example.paul.snapchatdemo;
+package com.example.paul.snapchatdemo.fragment;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -16,9 +16,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.adapters.FriendAdapter;
-import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.helpers.OnPageSlideListener;
 
 import java.util.ArrayList;
@@ -28,8 +29,6 @@ import java.util.ArrayList;
  */
 public class FragmentContactList extends Fragment implements SearchView.OnQueryTextListener, OnPageSlideListener{
     private View root;
-
-//    private ArrayList<String> friendArrayList = new ArrayList<>();
 
     private FriendAdapter friendArrayAdapter;
     @Nullable

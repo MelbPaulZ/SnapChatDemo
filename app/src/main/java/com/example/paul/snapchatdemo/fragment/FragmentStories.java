@@ -1,4 +1,4 @@
-package com.example.paul.snapchatdemo;
+package com.example.paul.snapchatdemo.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.widgets.ExpandedListView;
 import com.squareup.picasso.Picasso;
 
