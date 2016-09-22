@@ -46,7 +46,7 @@ public class LoginActivity  extends AppCompatActivity{
                 // get the username from edit text
                 userName = userNameEditText.getText().toString();
 
-                Toast.makeText(getBaseContext(), "login now...",Toast.LENGTH_LONG).show();
+                Toast.makeText(getBaseContext(), "login now...Please be patient...",Toast.LENGTH_LONG).show();
 
                 // get remote service
                 UserApi userApi = HttpUtil.accessServer(UserApi.class);
@@ -56,6 +56,8 @@ public class LoginActivity  extends AppCompatActivity{
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         Log.i(TAG, "onResponse: " + response.body().toString());
+                        User loginUser = response.body();
+                        loginUser.toString();
                         // if server response data successfully, start main activity
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
