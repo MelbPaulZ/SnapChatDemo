@@ -50,7 +50,7 @@ public class FragmentStories extends Fragment {
         urls.add(UrlManager.getInstance().getUrls().get(1).getUrl());
         urls.add("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
 
-        for (DiscoveryUrl discoveryUrl : UrlManager.getUrls()) {
+        for (DiscoveryUrl discoveryUrl : UrlManager.getInstance().getUrls()) {
             ImageView imageView = new ImageView(getContext());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(new ViewGroup.LayoutParams(800, 800));
             imageView.setLayoutParams(params);

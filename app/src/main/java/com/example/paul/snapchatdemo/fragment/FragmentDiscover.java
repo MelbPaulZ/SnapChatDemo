@@ -13,21 +13,30 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.bean.DiscoveryUrl;
+import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.utils.L;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paul on 24/08/2016.
  */
 public class FragmentDiscover extends Fragment implements View.OnClickListener {
     private View root;
+    private CustomTabsIntent customTabsIntent;
+    private ImageView imageView1, imageView2, imageView3, imageView4, imageView5, imageView6, imageView7, imageView8;
 
     @Nullable
     @Override
@@ -45,15 +54,32 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
 
 
     public void initDiscovers(){
-        String url1 ="http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg" ;
-        ImageView imageView1 = (ImageView) root.findViewById(R.id.discover_image1);
-        Picasso.with(getContext()).load(url1).into(imageView1);
-        imageView1.setOnClickListener(this);
+        imageView1 = (ImageView) root.findViewById(R.id.discover_image1);
+        imageView2 = (ImageView) root.findViewById(R.id.discover_image2);
+        imageView3 = (ImageView) root.findViewById(R.id.discover_image3);
+        imageView4 = (ImageView) root.findViewById(R.id.discover_image4);
+        imageView5 = (ImageView) root.findViewById(R.id.discover_image5);
+        imageView6 = (ImageView) root.findViewById(R.id.discover_image6);
+        imageView7 = (ImageView) root.findViewById(R.id.discover_image7);
+        imageView8 = (ImageView) root.findViewById(R.id.discover_image8);
 
-        String url2 = "http://rter.info/image.php?iso=AUD&name=1-8cc9325417c87e4405fe57b8f371582c";
-        ImageView imageView2 = (ImageView) root.findViewById(R.id.discover_image2);
-        Picasso.with(getContext()).load(url2).into(imageView2);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(0).getUrl()).into(imageView1);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(1).getUrl()).into(imageView2);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(2).getUrl()).into(imageView3);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(3).getUrl()).into(imageView4);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(4).getUrl()).into(imageView5);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(5).getUrl()).into(imageView6);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
+
+        imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
+        imageView3.setOnClickListener(this);
+        imageView4.setOnClickListener(this);
+        imageView5.setOnClickListener(this);
+        imageView6.setOnClickListener(this);
+        imageView7.setOnClickListener(this);
+        imageView8.setOnClickListener(this);
     }
 
     @Override
@@ -64,16 +90,44 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
                 getResources(), R.drawable.ic_arrow_back);
         builder.setCloseButtonIcon(icon);
         builder.setToolbarColor(getResources().getColor(R.color.colorPrimary));
-        CustomTabsIntent customTabsIntent = builder.build();
+        customTabsIntent = builder.build();
+
         if (viewId == R.id.discover_image1 ){
-            String url = "http://www.wonderslist.com/most-beautiful-women-of-2016/";
-            customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
+            gotoUrlAndUpdate(0);
         }else if (viewId == R.id.discover_image2){
-            String url ="http://www.news.com.au/finance";
-            customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
-
-
+            gotoUrlAndUpdate(1);
+        }else if (viewId == R.id.discover_image3){
+            gotoUrlAndUpdate(2);
+        }else if (viewId == R.id.discover_image4){
+            gotoUrlAndUpdate(3);
+        }else if (viewId == R.id.discover_image5){
+            gotoUrlAndUpdate(4);
+        }else if (viewId == R.id.discover_image6){
+            gotoUrlAndUpdate(5);
+        }else if (viewId == R.id.discover_image7){
+            gotoUrlAndUpdate(6);
+        }else if (viewId == R.id.discover_image8){
+            gotoUrlAndUpdate(7);
         }
+        updateDiscovery();
+    }
+
+    private void gotoUrlAndUpdate(int index){
+        String url = UrlManager.getInstance().getUrls().get(index).getTextUrl();
+        int topic = UrlManager.getInstance().getUrls().get(index).getTopic();
+        customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
+        UrlManager.getInstance().updateUrls(topic);
+    }
+
+    private void updateDiscovery(){
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(0).getUrl()).into(imageView1);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(1).getUrl()).into(imageView2);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(2).getUrl()).into(imageView3);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(3).getUrl()).into(imageView4);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(4).getUrl()).into(imageView5);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(5).getUrl()).into(imageView6);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
     }
 
 
