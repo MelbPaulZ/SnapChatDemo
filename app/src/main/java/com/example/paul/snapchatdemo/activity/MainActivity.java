@@ -1,20 +1,25 @@
 package com.example.paul.snapchatdemo.activity;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.content.BroadcastReceiver;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
+import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
 import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
 import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
+import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
-import com.example.paul.snapchatdemo.R;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentMain fragmentMain;
     private FragmentAddfriends fragmentAddfriends;
     private FragmentAddaddressbook fragmentAddaddressbook;
     private FragmentAddusername fragmentAddusername;
+    private FragmentChat fragmentChat;
+
+    public static boolean isAppCreated = false;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         initFragments();
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
 
-
     }
 
     public void initFragments(){
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentAddfriends = new FragmentAddfriends();
         fragmentAddaddressbook = new FragmentAddaddressbook();
         fragmentAddusername = new FragmentAddusername();
+
     }
 
     public FragmentMain getFragmentMain(){
