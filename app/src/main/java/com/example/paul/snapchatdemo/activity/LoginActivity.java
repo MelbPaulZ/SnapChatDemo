@@ -41,6 +41,7 @@ public class LoginActivity  extends AppCompatActivity{
         final EditText userNameEditText = (EditText) findViewById(R.id.username);
 
         final TextView login = (TextView) findViewById(R.id.login_tv);
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
