@@ -4,17 +4,22 @@ package com.example.paul.snapchatdemo.bean;
  * Created by Paul on 20/09/2016.
  */
 
+import java.util.List;
+
 /** this class is for retrieving data from server, properties must be the same as server database.
  */
 public class User {
     private String id;
     private String token;
     private String username;
+    private List<Friend> friends;
+    private List<DiscoveryUrl> discoveryUrls;
 
-    public User(String id, String token, String userName) {
+    public User(String id, String token, String userName, List<Friend> friends) {
         this.id = id;
         this.token = token;
         this.username = userName;
+        this.friends = friends;
     }
 
     public String getId() {
@@ -43,10 +48,27 @@ public class User {
 
     @Override
     public String toString() {
-        return "Register{" +
+        return "User{" +
                 "id='" + id + '\'' +
                 ", token='" + token + '\'' +
-                ", userName='" + username + '\'' +
+                ", username='" + username + '\'' +
+                ", friends=" + friends.toString() +
                 '}';
+    }
+
+    public List<Friend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<Friend> friends) {
+        this.friends = friends;
+    }
+
+    public List<DiscoveryUrl> getDiscoveryUrls() {
+        return discoveryUrls;
+    }
+
+    public void setDiscoveryUrls(List<DiscoveryUrl> discoveryUrls) {
+        this.discoveryUrls = discoveryUrls;
     }
 }

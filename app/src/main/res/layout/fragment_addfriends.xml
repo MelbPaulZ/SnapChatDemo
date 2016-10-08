@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/button_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add by Username" />
+        <Button
+            android:id="@+id/button_addressbook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add from Address Book" />
+        <Button
+            android:id="@+id/button_nearby"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Nearby" />
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/addfriend"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

@@ -14,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.widgets.ExpandedListView;
 import com.squareup.picasso.Picasso;
 
@@ -44,8 +45,8 @@ public class FragmentStories extends Fragment {
     public void initSubscriptionScrollView() {
         LinearLayout subscriptionContentLayout = (LinearLayout) root.findViewById(R.id.subscription_content_layout);
         ArrayList<String> urls = new ArrayList<>();
-        urls.add("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
-        urls.add("http://rter.info/image.php?iso=AUD&name=1-8cc9325417c87e4405fe57b8f371582c");
+        urls.add(UrlManager.getInstance().getUrls().get(0).getUrl());
+        urls.add(UrlManager.getInstance().getUrls().get(1).getUrl());
         urls.add("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
 
         for (int i = 0; i < urls.size(); i++) {
@@ -60,9 +61,9 @@ public class FragmentStories extends Fragment {
 
     public void initRecommendTopics(){
         ImageView imageView1 = (ImageView) root.findViewById(R.id.stories_image1);
-        Picasso.with(getContext()).load("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg").into(imageView1);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(0).getUrl()).into(imageView1);
         ImageView imageView2 = (ImageView) root.findViewById(R.id.stories_image2);
-        Picasso.with(getContext()).load("http://rter.info/image.php?iso=AUD&name=1-8cc9325417c87e4405fe57b8f371582c").into(imageView2);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(1).getUrl()).into(imageView2);
         ImageView imageView3 = (ImageView) root.findViewById(R.id.stories_image3);
         ImageView imageView4 = (ImageView) root.findViewById(R.id.stories_image4);
         ImageView imageView5 = (ImageView) root.findViewById(R.id.stories_image5);

@@ -13,6 +13,8 @@ import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.api.UserApi;
 import com.example.paul.snapchatdemo.bean.C;
 import com.example.paul.snapchatdemo.bean.User;
+import com.example.paul.snapchatdemo.manager.FriendManager;
+import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +31,6 @@ public class LoginActivity  extends AppCompatActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         initListeners();
     }
 
@@ -39,7 +40,7 @@ public class LoginActivity  extends AppCompatActivity{
         // get the username
         final EditText userNameEditText = (EditText) findViewById(R.id.username);
 
-        TextView login = (TextView) findViewById(R.id.login_tv);
+        final TextView login = (TextView) findViewById(R.id.login_tv);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +59,9 @@ public class LoginActivity  extends AppCompatActivity{
                         Log.i(TAG, "onResponse: " + response.body().toString());
                         User loginUser = response.body();
                         loginUser.toString();
+                        FriendManager.getInstance().setFriendList(loginUser.getFriends());
+                        UrlManager.getInstance().setUrls(loginUser.getDiscoveryUrls());
+                        Log.i(TAG, "onResponse: " + UrlManager.getInstance().getUrls().size());
                         // if server response data successfully, start main activity
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
@@ -65,7 +69,7 @@ public class LoginActivity  extends AppCompatActivity{
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-                        Log.i(TAG, "onFailure: " + "userApi failure");
+                        Toast.makeText(getBaseContext(), "Login failure, please retry", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

@@ -64,9 +64,9 @@ public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
 
     // this needs to change later, for customisation
     public int getIcon(Friend friend){
-        if (friend.getGender() == "male"){
+        if (friend.getGender().equals("male")){
             return R.drawable.male;
-        }else if (friend.getGender() == "female"){
+        }else if (friend.getGender().equals("female")){
             return R.drawable.female;
         }
         return R.drawable.arrow;

@@ -1,7 +1,5 @@
 package com.example.paul.snapchatdemo.bean;
 
-import com.example.paul.snapchatdemo.bean.People;
-
 /**
  * Created by Paul on 7/09/2016.
  */
@@ -9,13 +7,12 @@ public class Friend implements People {
     private String name;
     private String status;
     private String gender;
-    private String DOB;
     // need to implement more, need discuss
 
     public Friend(String name) {
         this.name = name;
         status = "";
-        gender = "";
+        gender = "male";
     }
 
     public Friend(String name, String status) {
@@ -53,5 +50,14 @@ public class Friend implements People {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "name='" + name + '\'' +
+                ", status='" + status + '\'' +
+                ", gender='" + gender + '\'' +
+                '}';
     }
 }

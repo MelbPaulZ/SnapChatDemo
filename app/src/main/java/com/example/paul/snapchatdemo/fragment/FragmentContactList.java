@@ -2,35 +2,39 @@ package com.example.paul.snapchatdemo.fragment;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.gesture.Gesture;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
-import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.adapters.FriendAdapter;
 import com.example.paul.snapchatdemo.helpers.OnPageSlideListener;
-
-import java.util.ArrayList;
+import com.example.paul.snapchatdemo.manager.FriendManager;
 
 /**
  * Created by Paul on 24/08/2016.
  */
-public class FragmentContactList extends Fragment implements SearchView.OnQueryTextListener, OnPageSlideListener{
+public class FragmentContactList extends Fragment implements SearchView.OnQueryTextListener, OnPageSlideListener, GestureDetector.OnGestureListener{
     private View root;
-
+    private String TAG = "FragmentContactList";
     private FriendAdapter friendArrayAdapter;
+    GestureDetector detector;
+    private boolean isScollDown = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,6 +61,15 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
                 getSearchableInfo(getActivity().getComponentName()));
         searchView.setSubmitButtonEnabled(true);
         searchView.setOnQueryTextListener(this);
+
+        detector = new GestureDetector(getContext(), this);
+        root.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                 detector.onTouchEvent(motionEvent);
+                return true;
+            }
+        });
     }
 
     public void initListener(){
@@ -68,7 +81,6 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
             }
         });
     }
-
 
 
 
@@ -97,18 +109,7 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
 
     public void init(){
         ListView contactList = (ListView) root.findViewById(R.id.contact_list);
-
-        // simulate an arrayList data
-        ArrayList<Friend> simuArrayList = new ArrayList<>();
-        for(int i = 0 ; i < 5 ; i ++) {
-            simuArrayList.add(new Friend("Paul","message me","male"));
-            simuArrayList.add(new Friend("William","I am having lunch","male"));
-            simuArrayList.add(new Friend("Verra","coding now","female"));
-            simuArrayList.add(new Friend("Aaron","lecturing, busy","male"));
-            simuArrayList.add(new Friend("Brad Peter","guess where I am"));
-        }
-
-        friendArrayAdapter = new FriendAdapter(getContext(), R.layout.contact_single_line_view, simuArrayList);
+        friendArrayAdapter = new FriendAdapter(getContext(), R.layout.contact_single_line_view, FriendManager.getInstance().getFriendList());
         contactList.setAdapter(friendArrayAdapter);
 
     }
@@ -128,6 +129,13 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
         return false;
     }
 
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden){
+            isScollDown = false;
+        }
+    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -150,5 +158,38 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
     @Override
     public void movePrevious() {
         // do nothing, it is the most left one
+    }
+
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
+        if (distanceY<-10){
+            ((MainActivity)getActivity()).contactToAddFriends(); // to add friend
+        }
+        return true;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+        return true;
     }
 }
