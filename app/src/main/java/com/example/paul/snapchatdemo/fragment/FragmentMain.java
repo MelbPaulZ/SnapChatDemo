@@ -19,11 +19,14 @@ import java.util.ArrayList;
  */
 public class FragmentMain extends Fragment {
 
+    // test upload
+
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private FragmentDiscover fragmentDiscover;
     private FragmentContactList fragmentContactList;
     private FragmentStories fragmentStories;
     private FragmentMemories fragmentMemories;
+    private FragmentChat fragmentChat;
     private ViewPager viewPager;
 
     private View root;
@@ -46,8 +49,10 @@ public class FragmentMain extends Fragment {
         fragmentContactList = new FragmentContactList();
         fragmentStories = new FragmentStories();
         fragmentMemories = new FragmentMemories();
+        fragmentChat = new FragmentChat();
 
         //put the fragment in the arrayList, so can use view pager to slide
+        fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
         fragments.add(fragmentStories);
         fragments.add(fragmentDiscover);
