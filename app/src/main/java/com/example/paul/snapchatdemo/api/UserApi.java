@@ -18,5 +18,5 @@ public interface UserApi {
 
     // this is for user login
     @GET("login.php?")
-    Call<User> login(@Query("username") String username, @Query("method") String method);
+    Call<User> login(@Query("username") String username, @Query("password") String password, @Query("method") String method);
 }

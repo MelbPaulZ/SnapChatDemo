@@ -47,9 +47,6 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
     public void initDiscovers(){
         String url1 ="http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg" ;
         ImageView imageView1 = (ImageView) root.findViewById(R.id.discover_image1);
-//        ImageLoader imageLoader = ImageLoader.getInstance(); // Get singleton instance
-//        imageLoader.init(ImageLoaderConfiguration.createDefault(getContext()));
-//        imageLoader.displayImage(url1, imageView1);
         Picasso.with(getContext()).load(url1).into(imageView1);
         imageView1.setOnClickListener(this);
 

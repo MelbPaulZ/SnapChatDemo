@@ -14,6 +14,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.bean.DiscoveryUrl;
 import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.widgets.ExpandedListView;
 import com.squareup.picasso.Picasso;
@@ -49,12 +50,12 @@ public class FragmentStories extends Fragment {
         urls.add(UrlManager.getInstance().getUrls().get(1).getUrl());
         urls.add("http://esczx.baixing.com/uploadfile/2016/0427/20160427112336847.jpg");
 
-        for (int i = 0; i < urls.size(); i++) {
+        for (DiscoveryUrl discoveryUrl : UrlManager.getUrls()) {
             ImageView imageView = new ImageView(getContext());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(new ViewGroup.LayoutParams(800, 800));
             imageView.setLayoutParams(params);
             subscriptionContentLayout.addView(imageView);
-            Picasso.with(getContext()).load(urls.get(i)).into(imageView);
+            Picasso.with(getContext()).load(discoveryUrl.getUrl()).into(imageView);
         }
     }
 
@@ -65,11 +66,17 @@ public class FragmentStories extends Fragment {
         ImageView imageView2 = (ImageView) root.findViewById(R.id.stories_image2);
         Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(1).getUrl()).into(imageView2);
         ImageView imageView3 = (ImageView) root.findViewById(R.id.stories_image3);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(2).getUrl()).into(imageView3);
         ImageView imageView4 = (ImageView) root.findViewById(R.id.stories_image4);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(3).getUrl()).into(imageView4);
         ImageView imageView5 = (ImageView) root.findViewById(R.id.stories_image5);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(4).getUrl()).into(imageView5);
         ImageView imageView6 = (ImageView) root.findViewById(R.id.stories_image6);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(5).getUrl()).into(imageView6);
         ImageView imageView7 = (ImageView) root.findViewById(R.id.stories_image7);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
         ImageView imageView8 = (ImageView) root.findViewById(R.id.stories_image8);
+        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
     }
 
     public void initFriendStoriesListView() {
