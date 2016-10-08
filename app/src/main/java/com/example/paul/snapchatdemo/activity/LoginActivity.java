@@ -26,6 +26,7 @@ import retrofit2.Response;
 public class LoginActivity  extends AppCompatActivity{
     private final String TAG = "LoginActivity";
     private String userName;
+    private String passWord;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,11 +43,14 @@ public class LoginActivity  extends AppCompatActivity{
 
         final TextView login = (TextView) findViewById(R.id.login_tv);
 
+        final EditText passWordEditText = (EditText) findViewById(R.id.password);
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // get the username from edit text
                 userName = userNameEditText.getText().toString();
+                passWord = passWordEditText.getText().toString();
 
                 Toast.makeText(getBaseContext(), "login now...Please be patient...",Toast.LENGTH_LONG).show();
 
@@ -54,7 +58,7 @@ public class LoginActivity  extends AppCompatActivity{
                 UserApi userApi = HttpUtil.accessServer(UserApi.class);
 
                 // this is for getting data back, asynchronous doing this task
-                userApi.login(userName, C.methods.METHOD_LOGIN).enqueue(new Callback<User>() {
+                userApi.login(userName, passWord, C.methods.METHOD_LOGIN).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         Log.i(TAG, "onResponse: " + response.body().toString());

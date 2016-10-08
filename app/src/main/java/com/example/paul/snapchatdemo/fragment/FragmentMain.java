@@ -19,6 +19,8 @@ import java.util.ArrayList;
  */
 public class FragmentMain extends Fragment {
 
+    // test upload
+
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private FragmentDiscover fragmentDiscover;
     private FragmentContactList fragmentContactList;
