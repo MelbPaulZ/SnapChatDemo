@@ -26,4 +26,12 @@ public class FriendManager {
     public void setFriendList(List<Friend> friendList) {
         this.friendList = friendList;
     }
+
+    public List<String> getFriendNameListStr(){
+        List<String> ls = new ArrayList<>();
+        for (Friend friend: friendList){
+            ls.add(friend.getName());
+        }
+        return ls;
+    }
 }

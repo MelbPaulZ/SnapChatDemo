@@ -28,6 +28,7 @@ public class FragmentMain extends Fragment {
     private FragmentMemories fragmentMemories;
     private FragmentChat fragmentChat;
     private ViewPager viewPager;
+    private FragmentFriendSelection fragmentFriendSelection; // this need to put it in elsewhere, only for testing
 
     private View root;
     @Nullable
@@ -50,8 +51,11 @@ public class FragmentMain extends Fragment {
         fragmentStories = new FragmentStories();
         fragmentMemories = new FragmentMemories();
         fragmentChat = new FragmentChat();
+        fragmentFriendSelection = new FragmentFriendSelection();
+
 
         //put the fragment in the arrayList, so can use view pager to slide
+        fragments.add(fragmentFriendSelection);
         fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
         fragments.add(fragmentStories);
