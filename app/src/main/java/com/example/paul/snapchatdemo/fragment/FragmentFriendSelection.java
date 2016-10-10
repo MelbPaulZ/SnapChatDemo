@@ -3,6 +3,7 @@ package com.example.paul.snapchatdemo.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.adapters.ContactAdapter;
 import com.example.paul.snapchatdemo.adapters.FriendAdapter;
+import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.manager.FriendManager;
+
+import java.util.List;
 
 /**
  * Created by Paul on 9/10/16.
@@ -22,7 +27,7 @@ import com.example.paul.snapchatdemo.manager.FriendManager;
 public class FragmentFriendSelection extends Fragment implements View.OnClickListener{
     private View root;
     private TextView backBtn, nextBtn;
-    private ArrayAdapter<String> arrayAdapter;
+    private ContactAdapter contactAdapter;
 
     @Nullable
     @Override
@@ -47,8 +52,8 @@ public class FragmentFriendSelection extends Fragment implements View.OnClickLis
 
     public void initContent(){
         ListView contactList = (ListView) root.findViewById(R.id.friend_selection_listview);
-        arrayAdapter = new ArrayAdapter<String>(getContext(), R.layout.friend_selection_single_line,  R.id.friend_selection_name,FriendManager.getInstance().getFriendNameListStr());
-        contactList.setAdapter(arrayAdapter);
+        contactAdapter = new ContactAdapter(getContext(), R.layout.friend_selection_single_line, FriendManager.getInstance().getFriendList());
+        contactList.setAdapter(contactAdapter);
     }
 
     @Override
@@ -61,6 +66,8 @@ public class FragmentFriendSelection extends Fragment implements View.OnClickLis
                 break;
             case R.id.friend_selection_done_btn:
                 // set the done listener here
+                List<Friend> friendList = FriendManager.getInstance().getSelectedFriendList();
+                Log.i("myApp", "onClick: " + FriendManager.getInstance().getSelectedFriendList().size());
                 Toast.makeText(getContext(), "on click done", Toast.LENGTH_SHORT).show();
                 break;
             default:

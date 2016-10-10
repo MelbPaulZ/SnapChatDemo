@@ -11,6 +11,7 @@ import java.util.List;
 public class FriendManager {
     private static FriendManager ourInstance = new FriendManager();
     private List<Friend> friendList = new ArrayList<>();
+    private List<Friend> selectedFriendList = new ArrayList<>();
 
     public static FriendManager getInstance() {
         return ourInstance;
@@ -34,4 +35,18 @@ public class FriendManager {
         }
         return ls;
     }
+
+    public List<Friend> getSelectedFriendList() {
+        return selectedFriendList;
+    }
+
+    public void setSelectedFriendList(List<Friend> selectedFriendList) {
+        this.selectedFriendList = selectedFriendList;
+    }
+
+    public boolean isFriendSelected(Friend friend){
+        return selectedFriendList.contains(friend);
+    }
+
+
 }

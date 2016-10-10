@@ -6,11 +6,13 @@
         android:id="@+id/username"
         android:textSize="30sp"
         android:hint="username"
+        android:text="tom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/password"
         android:textSize="30sp"
+        android:text="123456"
         android:hint="password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
