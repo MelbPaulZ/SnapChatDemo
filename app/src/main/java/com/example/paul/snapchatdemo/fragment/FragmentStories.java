@@ -3,6 +3,7 @@ package com.example.paul.snapchatdemo.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.adapters.StoryAdapter;
 import com.example.paul.snapchatdemo.bean.DiscoveryUrl;
+import com.example.paul.snapchatdemo.manager.StoryManager;
 import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.widgets.ExpandedListView;
 import com.squareup.picasso.Picasso;
@@ -80,13 +83,11 @@ public class FragmentStories extends Fragment {
     }
 
     public void initFriendStoriesListView() {
-        ArrayList<String> friendStories = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            friendStories.add(String.format("this is friend stories %d", i));
-        }
-        ArrayAdapter<String> friendStoriesAdapter = new ArrayAdapter<String>(getContext(), R.layout.friend_stories_one_line, R.id.friend_stories_text, friendStories);
-        ExpandedListView friendStoriesListView = (ExpandedListView) root.findViewById(R.id.friend_stories);
 
-        friendStoriesListView.setAdapter(friendStoriesAdapter);
+        StoryAdapter storyAdapter = new StoryAdapter(getContext(), R.layout.friend_stories_one_line, StoryManager.getInstance().getStoryList());
+        ExpandedListView friendStoriesListView = (ExpandedListView) root.findViewById(R.id.friend_stories);
+        friendStoriesListView.setAdapter(storyAdapter);
     }
+
+
 }

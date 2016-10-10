@@ -22,7 +22,7 @@ import java.util.List;
 public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
     private FriendFilter friendFilter;
     private ArrayList<Friend> friendArrayList;
-    private ArrayList<Friend> filteredArrayList;
+    private ArrayList<Friend> filteredArrayList = new ArrayList<>();
 
     private TextView nameTV;
     private TextView subTitle;

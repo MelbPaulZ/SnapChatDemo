@@ -5,26 +5,11 @@ package com.example.paul.snapchatdemo.bean;
  */
 public class Friend implements People {
     private String name;
+    private String id;
     private String status;
     private String gender;
     // need to implement more, need discuss
 
-    public Friend(String name) {
-        this.name = name;
-        status = "";
-        gender = "male";
-    }
-
-    public Friend(String name, String status) {
-        this.name = name;
-        this.status = status;
-    }
-
-    public Friend(String name, String status, String gender) {
-        this.name = name;
-        this.status = status;
-        this.gender = gender;
-    }
 
     @Override
     public void setName(String name) {
@@ -59,5 +44,13 @@ public class Friend implements People {
                 ", status='" + status + '\'' +
                 ", gender='" + gender + '\'' +
                 '}';
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
