@@ -1,12 +1,18 @@
 package com.example.paul.snapchatdemo.activity;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.bean.FriendPhone;
 import com.example.paul.snapchatdemo.R;
@@ -14,6 +20,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
 import com.example.paul.snapchatdemo.fragment.FragmentAddedme;
 import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
 import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
+import com.example.paul.snapchatdemo.fragment.FragmentCamera;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentResultAddedme;
@@ -46,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
     private String friend_username;
     private String friend_userid;
     private ArrayList<FriendPhone> friendPhoneList;
-    public static Context contextOfApplication;
-    public static Context getContextOfApplication()
-    {
-        return contextOfApplication;
-    }
-
     public ArrayList<FriendPhone> getFriendPhoneList() {
         return friendPhoneList;
     }
@@ -128,6 +129,45 @@ public class MainActivity extends AppCompatActivity {
 
     public FragmentMain getFragmentMain(){
         return fragmentMain;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case FragmentCamera.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent,
+                            FragmentCamera.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                } else {
+                    Toast.makeText(getBaseContext(), "retry", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FragmentCamera.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                fragmentMain.getFragmentCamera().getResult(data);
+            }
+
+        }
+    }
+
+    public void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                    FragmentCamera.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
+                    FragmentCamera.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
     }
 
     public void contactToUserscreen(){

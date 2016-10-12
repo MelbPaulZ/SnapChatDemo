@@ -26,7 +26,6 @@ import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.api.UserApi;
 import com.example.paul.snapchatdemo.bean.C;
-import com.example.paul.snapchatdemo.bean.FriendPhone;
 import com.example.paul.snapchatdemo.bean.PhotoStory;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
 
@@ -55,8 +54,6 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private ImageView picImageView;
     private String absolutePath;
     private Bitmap bitmap;
-    //Context context=getActivity();
-    Context applicationContext = MainActivity.getContextOfApplication();
 
     @Nullable
     @Override

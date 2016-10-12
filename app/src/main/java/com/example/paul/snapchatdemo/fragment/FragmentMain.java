@@ -27,6 +27,7 @@ public class FragmentMain extends Fragment {
     private FragmentStories fragmentStories;
     private FragmentMemories fragmentMemories;
     private FragmentChat fragmentChat;
+    private FragmentCamera fragmentCamera;
     private ViewPager viewPager;
     private FragmentFriendSelection fragmentFriendSelection; // this need to put it in elsewhere, only for testing
 
@@ -47,6 +48,7 @@ public class FragmentMain extends Fragment {
     private void initAll(){
         // new fragments that can be reached by slide here
         fragmentDiscover = new FragmentDiscover();
+        fragmentCamera = new FragmentCamera();
         fragmentContactList = new FragmentContactList();
         fragmentStories = new FragmentStories();
         fragmentMemories = new FragmentMemories();
@@ -55,6 +57,7 @@ public class FragmentMain extends Fragment {
 
 
         //put the fragment in the arrayList, so can use view pager to slide
+        fragments.add(fragmentCamera);
         fragments.add(fragmentFriendSelection);
         fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
@@ -80,5 +83,10 @@ public class FragmentMain extends Fragment {
 
     public ViewPager getViewPager(){
         return this.viewPager;
+    }
+
+    public FragmentCamera getFragmentCamera(){
+        return this.fragmentCamera;
+
     }
 }
