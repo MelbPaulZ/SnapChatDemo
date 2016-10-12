@@ -1,33 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="100dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="username : "
+        android:textSize="20sp"
+        android:layout_toLeftOf="@+id/username"
+        android:layout_alignBottom="@+id/username"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="password : "
+        android:textSize="20sp"
+        android:layout_toLeftOf="@+id/password"
+        android:layout_alignBottom="@+id/password"/>
     <EditText
         android:id="@+id/username"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:hint="username"
         android:text="tom"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/password"
-        android:textSize="30sp"
+        android:textSize="20sp"
         android:text="123456"
         android:hint="password"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/login_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:text="Login"
-        android:textSize="40sp"
+        android:textSize="20sp"
         />
     <TextView
         android:id="@+id/register_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Register yourself"
-        android:textSize="40sp"/>
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/login_tv"
+        android:textSize="20sp"/>
 
-</LinearLayout>
+</RelativeLayout>
