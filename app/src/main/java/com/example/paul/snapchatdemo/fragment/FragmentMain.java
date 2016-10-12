@@ -89,4 +89,8 @@ public class FragmentMain extends Fragment {
         return this.fragmentCamera;
 
     }
+
+    public FragmentMemories getFragmentMemories(){
+        return this.fragmentMemories;
+    }
 }

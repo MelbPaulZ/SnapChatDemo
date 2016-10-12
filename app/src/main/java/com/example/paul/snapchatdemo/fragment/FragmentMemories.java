@@ -54,6 +54,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private ImageView picImageView;
     private String absolutePath;
     private Bitmap bitmap;
+    public static final int PICK_PHOTO = 1;
 
     @Nullable
     @Override
@@ -121,40 +122,40 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
         }
 
     public void createstory(){
-        String myBase64Image = encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
-        System.out.println("myBase64Image.length():"+myBase64Image.length());
-        String test="123456";
-        String saveImgPath= "/storage/emulated/0/DCIM/100ANDRO/1.JPG";
-        boolean flag=compressBiamp(bitmap,saveImgPath,100);
-        System.out.println("flag "+flag);
-        File uploadImg=new File(absolutePath);
-        System.out.println("File"+uploadImg);
-
-        //System.out.println("myBase64Image:"+myBase64Image);
-        //Bitmap myBitmapAgain = decodeBase64(myBase64Image);
-        //System.out.println("myBitmapAgain:"+myBitmapAgain);
-        //picImageView.setImageBitmap(myBitmapAgain);
-        String userid= ((MainActivity)getActivity()).getUserId();
-                // get remote service
-                UserApi userApi = HttpUtil.accessServer(UserApi.class);
-
-                // this is for getting data back, asynchronous doing this task
-                userApi.createstory(userid, uploadImg, C.methods.METHOD_CREATESTORY).enqueue(new Callback<ArrayList<PhotoStory>>() {
-                    @Override
-                    public void onResponse(Call<ArrayList<PhotoStory>> call, Response<ArrayList<PhotoStory>> response) {
-                        Log.i(TAG, "onResponse: " + response.body().toString());
-                        Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
-                                "create story successfully", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<ArrayList<PhotoStory>> call, Throwable t) {
-                        Log.i(TAG, "onFailure: " + "userApi failure");
-                        Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
-                                "create story failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//        String myBase64Image = encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
+//        System.out.println("myBase64Image.length():"+myBase64Image.length());
+//        String test="123456";
+//        String saveImgPath= "/storage/emulated/0/DCIM/100ANDRO/1.JPG";
+//        boolean flag=compressBiamp(bitmap,saveImgPath,100);
+//        System.out.println("flag "+flag);
+//        File uploadImg=new File(absolutePath);
+//        System.out.println("File"+uploadImg);
+//
+//        //System.out.println("myBase64Image:"+myBase64Image);
+//        //Bitmap myBitmapAgain = decodeBase64(myBase64Image);
+//        //System.out.println("myBitmapAgain:"+myBitmapAgain);
+//        //picImageView.setImageBitmap(myBitmapAgain);
+//        String userid= ((MainActivity)getActivity()).getUserId();
+//                // get remote service
+//                UserApi userApi = HttpUtil.accessServer(UserApi.class);
+//
+//                // this is for getting data back, asynchronous doing this task
+//                userApi.createstory(userid, uploadImg, C.methods.METHOD_CREATESTORY).enqueue(new Callback<ArrayList<PhotoStory>>() {
+//                    @Override
+//                    public void onResponse(Call<ArrayList<PhotoStory>> call, Response<ArrayList<PhotoStory>> response) {
+//                        Log.i(TAG, "onResponse: " + response.body().toString());
+//                        Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
+//                                "create story successfully", Toast.LENGTH_SHORT).show();
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<ArrayList<PhotoStory>> call, Throwable t) {
+//                        Log.i(TAG, "onFailure: " + "userApi failure");
+//                        Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
+//                                "create story failed", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
     }
 
     public static boolean compressBiamp(Bitmap bitmap, String compressPath, int quality) {
@@ -184,35 +185,56 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);//Pick an item from the data
         intent.setType("image/*");//从所有图片中进行选择
-        startActivityForResult(intent, 1);
+        getActivity().startActivityForResult(intent, PICK_PHOTO);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK) {//从相册选择照片不裁切
-            try {
-                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
-                System.out.println("Uri:" + selectedImage);
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContext().getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                absolutePath = cursor.getString(columnIndex);  //获取照片路径
-                System.out.println("String:" + absolutePath);
-                cursor.close();
-                //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
-                bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
-                System.out.println("bitmap:"+bitmap);
-                picImageView.setImageBitmap(bitmap);
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == getActivity().RESULT_OK) {//从相册选择照片不裁切
+//            try {
+//                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+//                System.out.println("Uri:" + selectedImage);
+//                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//                Cursor cursor = getContext().getContentResolver().query(selectedImage,
+//                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+//                cursor.moveToFirst();
+//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                absolutePath = cursor.getString(columnIndex);  //获取照片路径
+//                System.out.println("String:" + absolutePath);
+//                cursor.close();
+//                //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
+//                bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
+//                System.out.println("bitmap:"+bitmap);
+//                picImageView.setImageBitmap(bitmap);
+//
+//
+//            } catch (Exception e) {
+//                // TODO Auto-generatedcatch block
+//                e.printStackTrace();
+//            }
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
-
-            } catch (Exception e) {
-                // TODO Auto-generatedcatch block
-                e.printStackTrace();
-            }
+    public void getPhoto(Intent data){
+        Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+        System.out.println("Uri:" + selectedImage);
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContext().getContentResolver().query(selectedImage,
+                filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        absolutePath = cursor.getString(columnIndex);  //获取照片路径
+        System.out.println("String:" + absolutePath);
+        cursor.close();
+        //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
+        try {
+            bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("bitmap:"+bitmap);
+        picImageView.setImageBitmap(bitmap);
     }
 
 

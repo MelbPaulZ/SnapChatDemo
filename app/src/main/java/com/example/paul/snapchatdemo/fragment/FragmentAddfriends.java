@@ -135,7 +135,6 @@ public class FragmentAddfriends extends Fragment implements View.OnClickListener
     public void onDestroy() {
         super.onDestroy();
         // do not forget to unregister you broadcast receiver
-        getActivity().unregisterReceiver(receiver);
     }
 
     //Create a BroadcastRecevier for ACTION_FOUND

@@ -23,6 +23,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
 import com.example.paul.snapchatdemo.fragment.FragmentCamera;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
+import com.example.paul.snapchatdemo.fragment.FragmentMemories;
 import com.example.paul.snapchatdemo.fragment.FragmentResultAddedme;
 import com.example.paul.snapchatdemo.fragment.FragmentResultFriend;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
@@ -153,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 fragmentMain.getFragmentCamera().getResult(data);
             }
-
+        }else if (requestCode == FragmentMemories.PICK_PHOTO){
+                fragmentMain.getFragmentMemories().getPhoto(data);
         }
     }
 
