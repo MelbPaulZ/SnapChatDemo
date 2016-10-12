@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="back"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/resultFriendBtBack"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <LinearLayout
+        android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/friend_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        />
+    </LinearLayout>
+
+</LinearLayout>

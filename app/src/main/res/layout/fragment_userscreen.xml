@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:gravity="center"
+        android:id="@+id/tv_username"
+        />
+    <ImageView
+        android:id="@+id/qrcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/qr_code"
+        android:layout_below="@id/tv_username"
+        />
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@id/qrcode">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Added me"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:id="@+id/button_addedme"
+
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add friends"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:id="@+id/button_addfriends"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My Friends"
+        android:textSize="40dp"
+        android:gravity="center"
+        android:id="@+id/button_myfriends"
+        />
+
+
+</LinearLayout>
+</RelativeLayout>
