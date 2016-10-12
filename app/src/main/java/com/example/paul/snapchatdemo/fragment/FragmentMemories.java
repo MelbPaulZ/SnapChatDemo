@@ -109,21 +109,37 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 startActivity(email);
                 break;
             case R.id.create_story:
-                String myBase64Image = encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
-                System.out.println("myBase64Image.length():"+myBase64Image.length());
-                String test="123456";
-                boolean flag=compressBiamp(bitmap,"/storage/emulated/0/DCIM/100ANDRO/1.JPG",90);
-                System.out.println("flag "+flag);
-                //System.out.println("myBase64Image:"+myBase64Image);
-                //Bitmap myBitmapAgain = decodeBase64(myBase64Image);
-                //System.out.println("myBitmapAgain:"+myBitmapAgain);
-                //picImageView.setImageBitmap(myBitmapAgain);
-                String userid= ((MainActivity)getActivity()).getUserId();
-                /*// get remote service
+                /*createstory();*/
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void createstory2(){
+        }
+
+    public void createstory(){
+        String myBase64Image = encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
+        System.out.println("myBase64Image.length():"+myBase64Image.length());
+        String test="123456";
+        String saveImgPath= "/storage/emulated/0/DCIM/100ANDRO/1.JPG";
+        boolean flag=compressBiamp(bitmap,saveImgPath,100);
+        System.out.println("flag "+flag);
+        File uploadImg=new File(absolutePath);
+        System.out.println("File"+uploadImg);
+
+        //System.out.println("myBase64Image:"+myBase64Image);
+        //Bitmap myBitmapAgain = decodeBase64(myBase64Image);
+        //System.out.println("myBitmapAgain:"+myBitmapAgain);
+        //picImageView.setImageBitmap(myBitmapAgain);
+        String userid= ((MainActivity)getActivity()).getUserId();
+                // get remote service
                 UserApi userApi = HttpUtil.accessServer(UserApi.class);
 
                 // this is for getting data back, asynchronous doing this task
-                userApi.createstory(userid, test, C.methods.METHOD_CREATESTORY).enqueue(new Callback<ArrayList<PhotoStory>>() {
+                userApi.createstory(userid, uploadImg, C.methods.METHOD_CREATESTORY).enqueue(new Callback<ArrayList<PhotoStory>>() {
                     @Override
                     public void onResponse(Call<ArrayList<PhotoStory>> call, Response<ArrayList<PhotoStory>> response) {
                         Log.i(TAG, "onResponse: " + response.body().toString());
@@ -138,11 +154,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                         Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
                                 "create story failed", Toast.LENGTH_SHORT).show();
                     }
-                });*/
-                break;
-            default:
-                break;
-        }
+                });
     }
 
     public static boolean compressBiamp(Bitmap bitmap, String compressPath, int quality) {
