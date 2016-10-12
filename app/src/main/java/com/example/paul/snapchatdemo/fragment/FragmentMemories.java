@@ -51,6 +51,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private Button deleteFromAlbum;
     private Button socialSharePhoto;
     private Button createstory;
+    private Button camera;
     private ImageView picImageView;
     private String absolutePath;
     private Bitmap bitmap;
@@ -72,7 +73,8 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
 
 
     public void initMemories(){
-
+        camera = (Button) root.findViewById(R.id.camera);
+        camera.setOnClickListener(this);
         picImageView = (ImageView) root.findViewById(R.id.View);
         chooseFromAlbum = (Button) root.findViewById(R.id.choose_from_album);
         chooseFromAlbum.setOnClickListener(this);
@@ -113,9 +115,15 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 /*createstory();*/
 
                 break;
+            case R.id.camera:
+                fromMainToCamera();
             default:
                 break;
         }
+    }
+
+    private void fromMainToCamera(){
+        ((MainActivity)getActivity()).fromMainToCamera();
     }
 
     public void createstory2(){

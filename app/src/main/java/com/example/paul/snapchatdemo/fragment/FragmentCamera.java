@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -37,19 +38,14 @@ import java.io.IOException;
 public class FragmentCamera extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback{
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1888;
     public static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    private View root;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_camera,
+        root = inflater.inflate(R.layout.fragment_camera,
                 container, false);
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((MainActivity)getActivity()).checkPermission();
+        return root;
     }
 
     @Override
@@ -90,6 +86,7 @@ public class FragmentCamera extends Fragment implements ActivityCompat.OnRequest
 
         System.out.println(finalFile.getAbsolutePath());
         saveToInternalStorage(bitmap);
+        // from camera fragment to main fragment
     }
 
     private String saveToInternalStorage(Bitmap bitmapImage){

@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentAddedme fragmentAddedme;
     private FragmentResultAddedme fragmentResultAddedme;
     private FragmentUserscreen fragmentUserscreen;
+    private FragmentCamera fragmentCamera;
 
 
     private String userId;
@@ -126,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentAddedme = new FragmentAddedme();
         fragmentResultAddedme = new FragmentResultAddedme();
         fragmentUserscreen = new FragmentUserscreen();
+        fragmentCamera = new FragmentCamera();
+
     }
 
     public FragmentMain getFragmentMain(){
@@ -152,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FragmentCamera.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                fragmentMain.getFragmentCamera().getResult(data);
+                fragmentCamera.getResult(data);
+                fromCameraToMain();
+            }else if (resultCode == Activity.RESULT_CANCELED){
+                fromCameraToMain();
             }
         }else if (requestCode == FragmentMemories.PICK_PHOTO){
                 fragmentMain.getFragmentMemories().getPhoto(data);
@@ -172,6 +178,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    public void fromMainToCamera(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).show(fragmentCamera).commit();
+        checkPermission();
+    }
+
+    public void fromCameraToMain(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentCamera).show(fragmentMain).commitAllowingStateLoss();
+    }
     public void contactToUserscreen(){
         getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up).hide(fragmentMain).commit();
         if (fragmentUserscreen.isAdded()){

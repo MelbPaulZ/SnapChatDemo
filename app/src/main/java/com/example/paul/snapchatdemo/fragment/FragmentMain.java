@@ -48,7 +48,6 @@ public class FragmentMain extends Fragment {
     private void initAll(){
         // new fragments that can be reached by slide here
         fragmentDiscover = new FragmentDiscover();
-        fragmentCamera = new FragmentCamera();
         fragmentContactList = new FragmentContactList();
         fragmentStories = new FragmentStories();
         fragmentMemories = new FragmentMemories();
@@ -57,7 +56,6 @@ public class FragmentMain extends Fragment {
 
 
         //put the fragment in the arrayList, so can use view pager to slide
-        fragments.add(fragmentCamera);
         fragments.add(fragmentFriendSelection);
         fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
