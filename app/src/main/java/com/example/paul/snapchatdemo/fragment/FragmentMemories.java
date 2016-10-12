@@ -56,7 +56,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private String absolutePath;
     private Bitmap bitmap;
     //Context context=getActivity();
-    Context applicationContext = MainActivity.getContextOfApplication();
+    //Context applicationContext = MainActivity.getContextOfApplication();
 
     @Nullable
     @Override

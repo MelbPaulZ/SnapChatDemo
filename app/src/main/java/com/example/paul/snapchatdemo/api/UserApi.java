@@ -5,6 +5,7 @@ import com.example.paul.snapchatdemo.bean.Friendship;
 import com.example.paul.snapchatdemo.bean.PhotoStory;
 import com.example.paul.snapchatdemo.bean.User;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -33,7 +34,7 @@ public interface UserApi {
 
     //this is for create story
     @PUT("createstory.php?")
-    Call<ArrayList<PhotoStory>> createstory(@Query("id") String id, @Query("image") String image,
+    Call<ArrayList<PhotoStory>> createstory(@Query("id") String id, @Query("image") File uploadImg,
                                  @Query("method") String method);
 
     //this is for agree add friend request
