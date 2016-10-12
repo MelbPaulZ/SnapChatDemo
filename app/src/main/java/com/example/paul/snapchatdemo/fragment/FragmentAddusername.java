@@ -1,44 +1,26 @@
 package com.example.paul.snapchatdemo.fragment;
 
-import android.Manifest;
-import android.app.ActivityOptions;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.squareup.picasso.Picasso;
+import com.example.paul.snapchatdemo.activity.MainActivity;
+import com.example.paul.snapchatdemo.api.UserApi;
+import com.example.paul.snapchatdemo.bean.C;
+import com.example.paul.snapchatdemo.bean.User;
+import com.example.paul.snapchatdemo.utils.HttpUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Anita on 2016/9/26.
@@ -47,6 +29,9 @@ public class FragmentAddusername extends Fragment implements View.OnClickListene
     private View root;
     private Button buttonUser;
     private EditText editUsername;
+    private String userName;
+    private Button buttonBackToAddfriends;
+    private final String TAG = "ADDusername";
 
     @Nullable
     @Override
@@ -59,22 +44,51 @@ public class FragmentAddusername extends Fragment implements View.OnClickListene
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initMemories();
+        initUsername();
     }
 
 
-    public void initMemories(){
+    public void initUsername(){
         buttonUser = (Button) root.findViewById(R.id.button_user);
         editUsername = (EditText) root.findViewById(R.id.edit_username);
         buttonUser.setOnClickListener(this);
+        buttonBackToAddfriends =(Button)root.findViewById(R.id.addusernameBtBack);
+        buttonBackToAddfriends.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_user:
-                String inputText = editUsername.getText().toString();
-                Toast.makeText(FragmentAddusername.this.getActivity(), inputText,Toast.LENGTH_SHORT).show();
+                userName = editUsername.getText().toString();
+                Toast.makeText(FragmentAddusername.this.getActivity().getBaseContext(), "searching now...", Toast.LENGTH_SHORT).show();
+                // get remote service
+                UserApi userApi = HttpUtil.accessServer(UserApi.class);
+
+                // this is for getting data back, asynchronous doing this task
+                userApi.searchusername(userName, C.methods.METHOD_SEARCHUSERNAME).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        Log.i(TAG, "onResponse: " + response.body().toString());
+                        String friendusername=response.body().getUserName();
+                        String frienduserid=response.body().getId();
+                        ((MainActivity)getActivity()).setFriendUsername(friendusername);
+                        ((MainActivity)getActivity()).setFriend_userid(frienduserid);
+                        // if server response data successfully, start main activity
+                        ((MainActivity)getActivity()).fromAddusernameToResultfriend();
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        Log.i(TAG, "onFailure: " + "userApi failure");
+                        Toast.makeText(FragmentAddusername.this.getActivity().getBaseContext(),
+                                "cannot find user with this username", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+            case R.id.addusernameBtBack:
+                ((MainActivity)getActivity()).fromAddusernameToAddfriends();
                 break;
             default:
                 break;

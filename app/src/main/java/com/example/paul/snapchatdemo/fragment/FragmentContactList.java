@@ -177,7 +177,7 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
         if (distanceY<-10){
-            ((MainActivity)getActivity()).contactToAddFriends(); // to add friend
+            ((MainActivity)getActivity()).contactToUserscreen(); // to add friend
         }
         return true;
     }

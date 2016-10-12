@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.paul.snapchatdemo.activity.MainActivity" >
     <Button
         android:id="@+id/choose_from_album"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose From Album" />
+        android:text="Choose Photo From Album" />
+    <Button
+        android:id="@+id/delete_from_album"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Photo" />
+    <Button
+    android:id="@+id/social_share_photo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Social Share Photo" />
+    <Button
+        android:id="@+id/create_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Story" />
+
+
+
     <ImageView
-        android:id="@+id/picture"
+        android:id="@+id/View"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
-
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_photo_loading"
+        />
 </LinearLayout>
