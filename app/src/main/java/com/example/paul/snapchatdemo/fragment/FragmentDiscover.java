@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
@@ -109,6 +110,13 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
         }else if (viewId == R.id.discover_image8){
             gotoUrlAndUpdate(7);
         }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updateDiscovery();
+            }
+        }, 3000);
         updateDiscovery();
     }
 
@@ -129,7 +137,4 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
         Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
         Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
     }
-
-
-
 }
