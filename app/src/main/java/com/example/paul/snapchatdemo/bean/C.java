@@ -15,6 +15,13 @@ public class C {
     public static class methods{
         public final static String METHOD_LOGIN = "login";
         public final static String METHOD_REGISTER = "register";
+        public final static String METHOD_SEARCHUSERNAME="searchusername";
+        public final static String METHOD_ADDUSERNAME ="addusername";
+        public final static String METHOD_SEARCHTELEPHONE="searchtelephone";
+        public final static String METHOD_ADDEDME="addedme";
+        public final static String METHOD_ADDEDMEAGREE="addedmeagree";
+        public final static String METHOD_CREATESTORY="createstory";
+
     }
 
 
