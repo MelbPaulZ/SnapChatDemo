@@ -11,8 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
-import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.bean.Story;
+import com.example.paul.snapchatdemo.manager.FriendManager;
+import com.example.paul.snapchatdemo.manager.StoryManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -33,18 +34,22 @@ public class StoryAdapter extends ArrayAdapter<Story> implements Filterable {
         this.context = context;
         this.resource = resource;
         this.storyList = objects;
+        this.filteredStoryList = objects;
+        getFilter();
     }
 
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Story story = storyList.get(position);
         View view = LayoutInflater.from(context).inflate(resource, null);
         TextView textView = (TextView) view.findViewById(R.id.friend_stories_text);
-        textView.setText(story.getText());
+        textView.setText(story.getStoryText());
+
+        TextView name = (TextView) view.findViewById(R.id.friend_stories_username);
+        name.setText(StoryManager.getInstance().getFriendName(story.getId()));
 
         ImageView imageView = (ImageView) view.findViewById(R.id.friend_stories_image);
-        if (story.getUrl()!=null){
-            Picasso.with(context).load(story.getUrl()).into(imageView);
+        if (story.getImage()!=null){
+            Picasso.with(context).load(story.getImage()).into(imageView);
         }
         return view;
     }
@@ -80,7 +85,7 @@ public class StoryAdapter extends ArrayAdapter<Story> implements Filterable {
             if (constrains!=null && constrains.length()>0){
                 ArrayList<Story> showingFriendArrayList = new ArrayList<>();
                 for (Story story : storyList){
-                    if (story.getText().toLowerCase().contains(constrains.toString().toLowerCase())){
+                    if (story.getStoryText().toLowerCase().contains(constrains.toString().toLowerCase())){
                         showingFriendArrayList.add(story);
                     }
                 }

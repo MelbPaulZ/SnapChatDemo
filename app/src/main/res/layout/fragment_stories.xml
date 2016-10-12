@@ -41,10 +41,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <SearchView
+            <android.support.v7.widget.SearchView
+                android:id="@+id/story_search_view"
                 android:layout_width="match_parent"
                 android:layout_height="40dp">
-            </SearchView>
+            </android.support.v7.widget.SearchView>
 
             <TextView
                 android:layout_width="wrap_content"

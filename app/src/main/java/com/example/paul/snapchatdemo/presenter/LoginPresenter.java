@@ -14,6 +14,7 @@ import com.example.paul.snapchatdemo.bean.User;
 import com.example.paul.snapchatdemo.manager.FriendManager;
 import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
+import com.example.paul.snapchatdemo.utils.UserUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,12 +45,11 @@ public class LoginPresenter {
         userApi.login(userName, passWord, C.methods.METHOD_LOGIN).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                Log.i(TAG, "onResponse: " + response.body().toString());
                 User loginUser = response.body();
                 loginUser.toString();
+                storyUserInfo(loginUser.getUserName(), loginUser.getId(), loginUser.getToken());
                 FriendManager.getInstance().setFriendList(loginUser.getFriends());
                 UrlManager.getInstance().setUrls(loginUser.getDiscoveryUrls());
-                Log.i(TAG, "onResponse: " + UrlManager.getInstance().getUrls().size());
                 activity.loginSuccessful();
             }
 
@@ -58,5 +58,11 @@ public class LoginPresenter {
                 Toast.makeText(context, "Login failure, please retry", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void storyUserInfo(String name, String id, String token){
+        UserUtil.setUsername(name);
+        UserUtil.setId(id);
+        UserUtil.setToken(token);
     }
 }

@@ -111,7 +111,6 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
         ListView contactList = (ListView) root.findViewById(R.id.contact_list);
         friendArrayAdapter = new FriendAdapter(getContext(), R.layout.contact_single_line_view, FriendManager.getInstance().getFriendList());
         contactList.setAdapter(friendArrayAdapter);
-
     }
 
     @Override

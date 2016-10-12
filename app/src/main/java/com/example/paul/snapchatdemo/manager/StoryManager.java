@@ -1,6 +1,9 @@
 package com.example.paul.snapchatdemo.manager;
 
+import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.bean.Story;
+import com.example.paul.snapchatdemo.bean.User;
+import com.example.paul.snapchatdemo.utils.UserUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,5 +28,18 @@ public class StoryManager {
 
     public void setStoryList(List<Story> storyList) {
         this.storyList = storyList;
+    }
+
+    public String getFriendName(String id){
+        if (UserUtil.getId().equals(id)){
+            return UserUtil.getUsername();
+        }else{
+            for (Friend friend : FriendManager.getInstance().getFriendList()){
+                if (friend.getId().equals(id)){
+                    return friend.getName();
+                }
+            }
+            return "not find this friend";
+        }
     }
 }

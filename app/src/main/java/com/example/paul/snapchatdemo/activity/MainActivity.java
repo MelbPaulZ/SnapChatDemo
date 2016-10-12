@@ -10,6 +10,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
 import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
+import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentMain fragmentMain;
@@ -17,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentAddaddressbook fragmentAddaddressbook;
     private FragmentAddusername fragmentAddusername;
     private FragmentChat fragmentChat;
+
+    private MainActivityPresenter presenter;
 
     public static boolean isAppCreated = false;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -26,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (presenter==null){
+            presenter = new MainActivityPresenter(getBaseContext());
+        }
+        presenter.setActivity(this);
+        presenter.getFriendStroy();
         initFragments();
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
 

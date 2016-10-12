@@ -4,29 +4,37 @@ package com.example.paul.snapchatdemo.bean;
  * Created by Paul on 10/10/16.
  */
 public class Story {
-    private Friend friend;
-    private String text;
-    private String url;
+    private String id;
+    private String storyText;
+    private String image;
 
     public Story(){}
 
-    public Story(String text, String url){
+    public Story(String storyText, String url){
 
     }
 
-    public String getText() {
-        return text;
+    public String getStoryText() {
+        return storyText;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setStoryText(String storyText) {
+        this.storyText = storyText;
     }
 
-    public String getUrl() {
-        return url;
+    public String getImage() {
+        return this.image;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

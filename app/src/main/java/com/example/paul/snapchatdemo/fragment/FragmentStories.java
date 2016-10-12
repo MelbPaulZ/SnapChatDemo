@@ -1,8 +1,10 @@
 package com.example.paul.snapchatdemo.fragment;
 
+import android.app.SearchManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +29,9 @@ import java.util.ArrayList;
 /**
  * Created by Paul on 7/09/2016.
  */
-public class FragmentStories extends Fragment {
+public class FragmentStories extends Fragment implements SearchView.OnQueryTextListener {
     private View root;
+    private StoryAdapter storyAdapter;
 
     @Nullable
     @Override
@@ -40,10 +43,10 @@ public class FragmentStories extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         initFriendStoriesListView();
         initRecommendTopics();
         initSubscriptionScrollView();
+        initSearch();
     }
 
     public void initSubscriptionScrollView() {
@@ -83,11 +86,28 @@ public class FragmentStories extends Fragment {
     }
 
     public void initFriendStoriesListView() {
-
-        StoryAdapter storyAdapter = new StoryAdapter(getContext(), R.layout.friend_stories_one_line, StoryManager.getInstance().getStoryList());
+        storyAdapter = new StoryAdapter(getContext(), R.layout.friend_stories_one_line, StoryManager.getInstance().getStoryList());
         ExpandedListView friendStoriesListView = (ExpandedListView) root.findViewById(R.id.friend_stories);
         friendStoriesListView.setAdapter(storyAdapter);
     }
 
+    private void initSearch(){
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(getContext().SEARCH_SERVICE);
+        SearchView searchView = (SearchView) root.findViewById(R.id.story_search_view);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
+    }
 
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        storyAdapter.getFilter().filter(newText);
+        return false;
+    }
 }
