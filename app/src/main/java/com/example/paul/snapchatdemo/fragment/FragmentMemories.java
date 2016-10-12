@@ -112,7 +112,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 startActivity(email);
                 break;
             case R.id.create_story:
-                createstory();
+                /*createstory();*/
 
                 break;
             default:
