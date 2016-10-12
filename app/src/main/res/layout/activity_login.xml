@@ -23,5 +23,11 @@
         android:text="Login"
         android:textSize="40sp"
         />
+    <TextView
+        android:id="@+id/register_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register yourself"
+        android:textSize="40sp"/>
 
 </LinearLayout>

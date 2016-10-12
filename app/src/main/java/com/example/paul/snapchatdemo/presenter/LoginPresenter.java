@@ -60,6 +60,10 @@ public class LoginPresenter {
         });
     }
 
+    public void signup(String username, String password){
+
+    }
+
     private void storyUserInfo(String name, String id, String token){
         UserUtil.setUsername(name);
         UserUtil.setId(id);
