@@ -5,17 +5,20 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.Toast;
 
-import com.example.paul.snapchatdemo.bean.FriendPhone;
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.bean.FriendPhone;
+import com.example.paul.snapchatdemo.firebase.FirebaseMessagingService;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
 import com.example.paul.snapchatdemo.fragment.FragmentAddedme;
 import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
@@ -113,9 +116,31 @@ public class MainActivity extends AppCompatActivity {
         presenter.setActivity(this);
         presenter.getFriendStroy();
         initFragments();
-        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
 
+        // redirect to chat screen
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
+        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+        getFragmentManager().beginTransaction().show(fragmentChat).commit();
 
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(intent.getAction().equals(FirebaseMessagingService.REGISTRATION_SUCCESS)){
+
+                    Bundle extras = intent.getExtras();
+                    if(extras != null){
+                        String message = (String)extras.get("message");
+                        fragmentChat.addMessageListItems(message,false);
+                    }
+                }
+                else {
+
+                }
+            }
+        };
+
+        // this is for chat screen
+        isAppCreated = true;
     }
 
     public void initFragments(){
@@ -130,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentUserscreen = new FragmentUserscreen();
         fragmentCamera = new FragmentCamera();
         fragmentImageEditor = new FragmentImageEditor();
+        fragmentChat = new FragmentChat();
 
     }
 
@@ -181,9 +207,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void fromCameraToEditor(String path){
 
-        fragmentImageEditor.imageCanvasBackgroundPath = path;
-        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commitAllowingStateLoss();
-         getFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
+//        fragmentImageEditor.imageCanvasBackgroundPath = path;
+//        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commitAllowingStateLoss();
+//         getFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
+        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
+        getFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
     }
 
 
@@ -372,6 +400,18 @@ public class MainActivity extends AppCompatActivity {
         else{
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentMain).commit();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(FirebaseMessagingService.REGISTRATION_SUCCESS));
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }
 
 }
