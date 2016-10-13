@@ -52,11 +52,11 @@ public class FragmentMain extends Fragment {
         fragmentStories = new FragmentStories();
         fragmentMemories = new FragmentMemories();
         fragmentChat = new FragmentChat();
-        fragmentFriendSelection = new FragmentFriendSelection();
+//        fragmentFriendSelection = new FragmentFriendSelection();
 
 
         //put the fragment in the arrayList, so can use view pager to slide
-        fragments.add(fragmentFriendSelection);
+//        fragments.add(fragmentFriendSelection);
         fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
         fragments.add(fragmentStories);
