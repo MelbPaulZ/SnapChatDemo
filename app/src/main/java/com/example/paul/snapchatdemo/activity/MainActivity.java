@@ -22,6 +22,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
 import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
 import com.example.paul.snapchatdemo.fragment.FragmentCamera;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
+import com.example.paul.snapchatdemo.fragment.FragmentImageEditor;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentMemories;
 import com.example.paul.snapchatdemo.fragment.FragmentResultAddedme;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentResultAddedme fragmentResultAddedme;
     private FragmentUserscreen fragmentUserscreen;
     private FragmentCamera fragmentCamera;
-
+    private FragmentImageEditor fragmentImageEditor;
 
     private String userId;
     private String username;
@@ -128,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentResultAddedme = new FragmentResultAddedme();
         fragmentUserscreen = new FragmentUserscreen();
         fragmentCamera = new FragmentCamera();
+        fragmentImageEditor = new FragmentImageEditor();
 
     }
 
@@ -156,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == FragmentCamera.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 fragmentCamera.getResult(data);
-                fromCameraToMain();
             }else if (resultCode == Activity.RESULT_CANCELED){
                 fromCameraToMain();
             }
@@ -176,6 +177,13 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA},
                     FragmentCamera.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
+    }
+
+    public void fromCameraToEditor(String path){
+
+        fragmentImageEditor.imageCanvasBackgroundPath = path;
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commitAllowingStateLoss();
+         getFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
     }
 
 

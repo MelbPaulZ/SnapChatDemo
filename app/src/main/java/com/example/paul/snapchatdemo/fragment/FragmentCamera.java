@@ -84,8 +84,10 @@ public class FragmentCamera extends Fragment implements ActivityCompat.OnRequest
         // CALL THIS METHOD TO GET THE ACTUAL PATH
         File finalFile = new File(getRealPathFromURI(tempUri));
 
-        System.out.println(finalFile.getAbsolutePath());
+        System.out.println(finalFile.getAbsolutePath()); // pass this to editor fragment
         saveToInternalStorage(bitmap);
+        finalFile.exists();
+        ((MainActivity)getActivity()).fromCameraToEditor(finalFile.getPath());
         // from camera fragment to main fragment
     }
 
