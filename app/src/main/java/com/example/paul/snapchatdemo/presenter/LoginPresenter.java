@@ -11,6 +11,7 @@ import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.api.UserApi;
 import com.example.paul.snapchatdemo.bean.C;
 import com.example.paul.snapchatdemo.bean.User;
+import com.example.paul.snapchatdemo.chat.Token;
 import com.example.paul.snapchatdemo.manager.FriendManager;
 import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
@@ -61,7 +62,18 @@ public class LoginPresenter {
     }
 
     public void signup(String username, String password){
+        UserApi userApi = HttpUtil.accessServer(UserApi.class);
+        userApi.register(Token.generateToken(), username, password).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Toast.makeText(context, "Registration successful, please login", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(context, "Registration failed, please retry", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void storyUserInfo(String name, String id, String token){

@@ -18,9 +18,7 @@ import java.util.ArrayList;
  * Created by Paul on 1/09/2016.
  */
 public class FragmentMain extends Fragment {
-
     // test upload
-
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private FragmentDiscover fragmentDiscover;
     private FragmentContactList fragmentContactList;
@@ -52,11 +50,6 @@ public class FragmentMain extends Fragment {
         fragmentStories = new FragmentStories();
         fragmentMemories = new FragmentMemories();
         fragmentChat = new FragmentChat();
-//        fragmentFriendSelection = new FragmentFriendSelection();
-
-
-        //put the fragment in the arrayList, so can use view pager to slide
-//        fragments.add(fragmentFriendSelection);
         fragments.add(fragmentMemories);
         fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
@@ -83,10 +76,11 @@ public class FragmentMain extends Fragment {
         return this.viewPager;
     }
 
-    public FragmentCamera getFragmentCamera(){
-        return this.fragmentCamera;
 
+    public void setPage(int index){
+        viewPager.setCurrentItem(index);
     }
+
 
     public FragmentMemories getFragmentMemories(){
         return this.fragmentMemories;

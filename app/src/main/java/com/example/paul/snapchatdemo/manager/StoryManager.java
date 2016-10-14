@@ -42,4 +42,17 @@ public class StoryManager {
             return "not find this friend";
         }
     }
+
+    public boolean isSecretBlocked(String userId, Story story){
+        if (userId.equals(story.getId())){
+            return false;
+        }else{
+            if (story.getIsSecret()==Story.STORY_SECRET){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+    }
 }

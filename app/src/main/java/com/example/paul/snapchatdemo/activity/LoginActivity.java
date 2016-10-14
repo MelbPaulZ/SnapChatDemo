@@ -54,6 +54,8 @@ public class LoginActivity  extends AppCompatActivity{
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                userName = userNameEditText.getText().toString();
+                passWord = passWordEditText.getText().toString();
                 presenter.signup(userName , passWord);
             }
         });

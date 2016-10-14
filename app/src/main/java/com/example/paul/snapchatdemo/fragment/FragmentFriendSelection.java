@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.adapters.ContactAdapter;
 import com.example.paul.snapchatdemo.adapters.FriendAdapter;
 import com.example.paul.snapchatdemo.bean.Friend;
@@ -62,13 +63,12 @@ public class FragmentFriendSelection extends Fragment implements View.OnClickLis
         switch (viewId){
             case R.id.friend_selection_back_btn:
                 // set the back listener here
-                Toast.makeText(getContext(), "on click back",Toast.LENGTH_SHORT).show();
+                ((MainActivity)getActivity()).fromFriendSelectionToMemory();
                 break;
             case R.id.friend_selection_done_btn:
                 // set the done listener here
-                List<Friend> friendList = FriendManager.getInstance().getSelectedFriendList();
-                Log.i("myApp", "onClick: " + FriendManager.getInstance().getSelectedFriendList().size());
-                Toast.makeText(getContext(), "on click done", Toast.LENGTH_SHORT).show();
+                List<Friend> friendList = FriendManager.getInstance().getSelectedFriendList(); // that's the friend list has been selected
+                ((MainActivity)getActivity()).fromFriendSelectionToContact();
                 break;
             default:
                 Toast.makeText(getContext(), "don't know what is clicked", Toast.LENGTH_SHORT).show();

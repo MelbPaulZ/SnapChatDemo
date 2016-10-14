@@ -3,6 +3,7 @@ package com.example.paul.snapchatdemo.manager;
 import com.example.paul.snapchatdemo.bean.Friend;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -48,5 +49,15 @@ public class FriendManager {
         return selectedFriendList.contains(friend);
     }
 
+    public String friendShipTime(long becomeFriendTime){
+        Calendar calendar = Calendar.getInstance();
+        long now = calendar.getTimeInMillis();
+        if (now - becomeFriendTime < 1000 * 3600){
+            return "become friend just now";
+        }else if (now - becomeFriendTime <= 1000 * 3600 * 24){
+            return "new friend";
+        }else
+            return "old friend";
+    }
 
 }

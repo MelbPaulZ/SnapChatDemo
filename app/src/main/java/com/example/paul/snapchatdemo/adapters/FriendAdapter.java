@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.bean.Friend;
+import com.example.paul.snapchatdemo.manager.FriendManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
     private TextView nameTV;
     private TextView subTitle;
     private ImageView icon;
+    private TextView friendShipTV;
     private int resource;
 
     public FriendAdapter(Context context, int resource, List<Friend> objects) {
@@ -52,6 +54,8 @@ public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
         icon = (ImageView) view.findViewById(R.id.icon_img);
         icon.setImageResource(getIcon(friend));
 
+        friendShipTV = (TextView) view.findViewById(R.id.friendship_time);
+        friendShipTV.setText(FriendManager.getInstance().friendShipTime(friend.getAddFriendTime()));
         return view;
     }
 

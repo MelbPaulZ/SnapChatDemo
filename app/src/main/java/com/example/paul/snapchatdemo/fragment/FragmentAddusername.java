@@ -69,7 +69,6 @@ public class FragmentAddusername extends Fragment implements View.OnClickListene
                 userApi.searchusername(userName, C.methods.METHOD_SEARCHUSERNAME).enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
-                        Log.i(TAG, "onResponse: " + response.body().toString());
                         String friendusername=response.body().getUserName();
                         String frienduserid=response.body().getId();
                         ((MainActivity)getActivity()).setFriendUsername(friendusername);

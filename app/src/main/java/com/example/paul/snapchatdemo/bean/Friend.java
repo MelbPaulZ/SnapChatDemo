@@ -8,6 +8,7 @@ public class Friend implements People {
     private String id;
     private String status;
     private String gender;
+    private long addFriendTime;
     // need to implement more, need discuss
 
 
@@ -52,5 +53,13 @@ public class Friend implements People {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getAddFriendTime() {
+        return addFriendTime;
+    }
+
+    public void setAddFriendTime(long addFriendTime) {
+        this.addFriendTime = addFriendTime;
     }
 }

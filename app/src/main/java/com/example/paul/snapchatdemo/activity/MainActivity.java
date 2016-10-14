@@ -22,6 +22,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
 import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
 import com.example.paul.snapchatdemo.fragment.FragmentCamera;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
+import com.example.paul.snapchatdemo.fragment.FragmentFriendSelection;
 import com.example.paul.snapchatdemo.fragment.FragmentImageEditor;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentMemories;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentUserscreen fragmentUserscreen;
     private FragmentCamera fragmentCamera;
     private FragmentImageEditor fragmentImageEditor;
+    private FragmentFriendSelection fragmentFriendSelection;
 
     private String userId;
     private String username;
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentUserscreen = new FragmentUserscreen();
         fragmentCamera = new FragmentCamera();
         fragmentImageEditor = new FragmentImageEditor();
-
+        fragmentFriendSelection = new FragmentFriendSelection();
     }
 
     public FragmentMain getFragmentMain(){
@@ -183,7 +185,11 @@ public class MainActivity extends AppCompatActivity {
 
         fragmentImageEditor.imageCanvasBackgroundPath = path;
         getSupportFragmentManager().beginTransaction().hide(fragmentMain).commitAllowingStateLoss();
-         getFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
+        if (!fragmentImageEditor.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commitAllowingStateLoss();
+        }else {
+            getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
+        }
     }
 
 
@@ -273,6 +279,20 @@ public class MainActivity extends AppCompatActivity {
         else{
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentResultFriend).commit();
         }
+    }
+
+    public void fromImageEditorToSelectFriends(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).commit();
+        if (!fragmentFriendSelection.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentFriendSelection).commit();
+        }else{
+            getSupportFragmentManager().beginTransaction().show(fragmentFriendSelection).commit();
+        }
+    }
+
+    public void fromFriendSelectionToContact(){
+        fragmentMain.setPage(2); // the third page is contact page
+        getSupportFragmentManager().beginTransaction().hide(fragmentFriendSelection).show(fragmentMain).commit();
     }
 
     public void fromUserscreenToAddedme(){
@@ -372,6 +392,10 @@ public class MainActivity extends AppCompatActivity {
         else{
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentMain).commit();
         }
+    }
+
+    public void fromFriendSelectionToMemory(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentFriendSelection).show(fragmentMain).commit();
     }
 
 }
