@@ -52,11 +52,11 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private Button deleteFromAlbum;
     private Button socialSharePhoto;
     private Button createstory;
+    private Button camera;
     private ImageView picImageView;
     private String absolutePath;
     private Bitmap bitmap;
-    //Context context=getActivity();
-    //Context applicationContext = MainActivity.getContextOfApplication();
+    public static final int PICK_PHOTO = 1;
 
     @Nullable
     @Override
@@ -74,7 +74,8 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
 
 
     public void initMemories(){
-
+        camera = (Button) root.findViewById(R.id.camera);
+        camera.setOnClickListener(this);
         picImageView = (ImageView) root.findViewById(R.id.View);
         chooseFromAlbum = (Button) root.findViewById(R.id.choose_from_album);
         chooseFromAlbum.setOnClickListener(this);
@@ -115,9 +116,15 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 /*createstory();*/
 
                 break;
+            case R.id.camera:
+                fromMainToCamera();
             default:
                 break;
         }
+    }
+
+    private void fromMainToCamera(){
+        ((MainActivity)getActivity()).fromMainToCamera();
     }
 
     public void createstory2(){
@@ -187,35 +194,56 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_PICK);//Pick an item from the data
         intent.setType("image/*");//从所有图片中进行选择
-        startActivityForResult(intent, 1);
+        getActivity().startActivityForResult(intent, PICK_PHOTO);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK) {//从相册选择照片不裁切
-            try {
-                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
-                System.out.println("Uri:" + selectedImage);
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContext().getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                absolutePath = cursor.getString(columnIndex);  //获取照片路径
-                System.out.println("String:" + absolutePath);
-                cursor.close();
-                //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
-                bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
-                System.out.println("bitmap:"+bitmap);
-                picImageView.setImageBitmap(bitmap);
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (resultCode == getActivity().RESULT_OK) {//从相册选择照片不裁切
+//            try {
+//                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+//                System.out.println("Uri:" + selectedImage);
+//                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//                Cursor cursor = getContext().getContentResolver().query(selectedImage,
+//                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+//                cursor.moveToFirst();
+//                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+//                absolutePath = cursor.getString(columnIndex);  //获取照片路径
+//                System.out.println("String:" + absolutePath);
+//                cursor.close();
+//                //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
+//                bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
+//                System.out.println("bitmap:"+bitmap);
+//                picImageView.setImageBitmap(bitmap);
+//
+//
+//            } catch (Exception e) {
+//                // TODO Auto-generatedcatch block
+//                e.printStackTrace();
+//            }
+//        }
+//        super.onActivityResult(requestCode, resultCode, data);
+//    }
 
-
-            } catch (Exception e) {
-                // TODO Auto-generatedcatch block
-                e.printStackTrace();
-            }
+    public void getPhoto(Intent data){
+        Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+        System.out.println("Uri:" + selectedImage);
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContext().getContentResolver().query(selectedImage,
+                filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        absolutePath = cursor.getString(columnIndex);  //获取照片路径
+        System.out.println("String:" + absolutePath);
+        cursor.close();
+        //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
+        try {
+            bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("bitmap:"+bitmap);
+        picImageView.setImageBitmap(bitmap);
     }
 
 

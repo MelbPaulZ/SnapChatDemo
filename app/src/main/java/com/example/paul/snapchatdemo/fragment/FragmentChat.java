@@ -1,8 +1,8 @@
 package com.example.paul.snapchatdemo.fragment;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -22,23 +22,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.api.ChatApi;
+import com.example.paul.snapchatdemo.bean.User;
 import com.example.paul.snapchatdemo.chat.ChatMessageAdapter;
 import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.chat.ImageGaleryAdapter;
 import com.example.paul.snapchatdemo.chat.Token;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.example.paul.snapchatdemo.firebase.FirebaseStorageService;
+import com.example.paul.snapchatdemo.utils.HttpUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
-public class FragmentChat extends android.support.v4.app.Fragment implements View.OnClickListener {
+public class FragmentChat extends Fragment {
     /**
      * Initialize fragment
      */
@@ -73,9 +76,6 @@ public class FragmentChat extends android.support.v4.app.Fragment implements Vie
     EditText messageText;
     LinearLayout imageLayout;
     LinearLayout inputLayout;
-
-    // [START declare_ref]
-    private StorageReference mStorageRef;
 
     @Override
     public void onSaveInstanceState(Bundle out) {
@@ -165,13 +165,40 @@ public class FragmentChat extends android.support.v4.app.Fragment implements Vie
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
 
-                    // TODO: send message to server
+
+
+
+                    // this is for getting data back, asynchronous doing this task
 
 
                     // add message to the message list
                     if (messageText.getText() != null) {
                         String inputMessage = messageText.getText().toString();
                         if (!inputMessage.isEmpty()) {
+
+                            // TODO: still using static data
+                            String senderUserId = "2";
+                            String receiverUserId = "4";
+                            String messageType = "1";
+
+                            // send message to server
+                            ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);
+                            chatApi.sendMessage(senderUserId, receiverUserId, inputMessage, messageType).enqueue(new Callback<User>() {
+                                @Override
+                                public void onResponse(Call<User> call, Response<User> response) {
+                                    // send message is successful
+                                }
+
+                                @Override
+                                public void onFailure(Call<User> call, Throwable t) {
+                                    // send message is failed, put message on the queue ?
+
+                                    // show command to user to resend message
+
+                                }
+                            });
+
+                            // add message to message list
                             messageText.setText(null);
                             addMessageListItems(inputMessage, false);
                         }
@@ -182,12 +209,7 @@ public class FragmentChat extends android.support.v4.app.Fragment implements Vie
                 return handled;
             }
         });
-
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
     }
-
-
 
     public void addMessageListItems(String input, boolean isImageURL){
         ChatMessageModel chatMessage;
@@ -239,31 +261,19 @@ public class FragmentChat extends android.support.v4.app.Fragment implements Vie
     }
 
     public List<String> sendImage() {
-
         String pathPrefix = "file://";
         Map<String,String> selectedImagePath = adapterImage.getSelectedImagePath();
         Set<String> keys = selectedImagePath.keySet();
         final List<String> imageURLDownload = new ArrayList();
 
         for (String imageURLPath:keys) {
-            String filePath = pathPrefix+imageURLPath;
-
-            // Restore instance state
-            String fileName = UUID.randomUUID().toString();
-
-            final StorageReference serverPhotoRef = mStorageRef.child("photos").child(fileName);
-            Uri fileUri = Uri.parse(filePath);
-            serverPhotoRef.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri downloadURL = taskSnapshot.getMetadata().getDownloadUrl();
-                    imageURLDownload.add(downloadURL.toString());
-                }
-            });
-
+            // upload image to server
+            String localImageFileName = pathPrefix+imageURLPath;
+            String urlDownload = FirebaseStorageService.uploadImage(localImageFileName);
+            imageURLDownload.add(urlDownload);
 
             // upload image to sender chat screen
-            addMessageListItems(filePath,true);
+            addMessageListItems(localImageFileName,true);
         }
 
         imageLayout.setVisibility(View.GONE);
@@ -278,8 +288,4 @@ public class FragmentChat extends android.support.v4.app.Fragment implements Vie
         return height;
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 }
