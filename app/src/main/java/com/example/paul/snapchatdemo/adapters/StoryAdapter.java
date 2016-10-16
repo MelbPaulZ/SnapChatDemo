@@ -101,7 +101,7 @@ public class StoryAdapter extends ArrayAdapter<Story> implements Filterable {
                         // story is not secret, just display the image
                         final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
                         final View popupView = inflater.inflate(R.layout.popup_image, null);
-                        final PopupWindow popupWindow = new PopupWindow(popupView, 800, 800,true);
+                        final PopupWindow popupWindow = new PopupWindow(popupView, 1000, 1000,true);
                         popupWindow.setOutsideTouchable(false);
                         ImageView popupImage = (ImageView) popupView.findViewById(R.id.popup_image);
                         popupImage.setOnClickListener(popupImageClickListener());
