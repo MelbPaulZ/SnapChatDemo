@@ -47,6 +47,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         Intent intentRece = new Intent(REGISTRATION_SUCCESS);
         intentRece.putExtra("message", message);
+
+        // broadcast the message to any receiver
         LocalBroadcastManager.getInstance(this).sendBroadcast(intentRece);
 
     }

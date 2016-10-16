@@ -51,7 +51,7 @@ public class FragmentMain extends Fragment {
         fragmentMemories = new FragmentMemories();
         fragmentChat = new FragmentChat();
         fragments.add(fragmentMemories);
-        fragments.add(fragmentChat);
+//        fragments.add(fragmentChat);
         fragments.add(fragmentContactList);
         fragments.add(fragmentStories);
         fragments.add(fragmentDiscover);

@@ -3,18 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/imageEditorRoot"
-    android:layout_width="300dp"
-    android:layout_height="match_parent">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <!-- TODO : somehow when width is set with match parent, it's actually bigger than that-->
     <com.example.paul.snapchatdemo.imageeditor.CanvasView
         android:id="@+id/imageCanvas"
-        android:layout_width="300dp"
-        android:layout_height="match_parent"/>
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
 
     <EditText
         android:id="@+id/imageInputText"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:paddingLeft="10dp"
@@ -29,7 +29,7 @@
 
     <LinearLayout
         android:id="@+id/editImageTopButtonLayout"
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:orientation="horizontal">
@@ -88,7 +88,7 @@
     </LinearLayout>
 
     <ScrollView android:id="@+id/emojiGridLayout"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         app:layout_heightPercent="50%"
         android:layout_below="@+id/editImageTopButtonLayout"
         android:visibility="gone">
@@ -102,7 +102,7 @@
     </ScrollView>
 
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
