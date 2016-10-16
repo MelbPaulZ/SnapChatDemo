@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentImageEditor = new FragmentImageEditor();
         fragmentChat = new FragmentChat();
         fragmentCreatestory  = new FragmentCreatestory();
-
+        fragmentFriendSelection = new FragmentFriendSelection();
         fragmentShowImageTimer = new FragmentShowImageTimer();
     }
 
