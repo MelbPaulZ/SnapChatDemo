@@ -47,18 +47,7 @@ public class LoginPresenter {
         userApi.login(userName, passWord, C.methods.METHOD_LOGIN).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-
-
-                final User loginUser = response.body();
-                Thread thread = new Thread(){
-                    @Override
-                    public void run() {
-                        String token = Token.generateToken();
-                        Token.registerToken(token, loginUser.getId());
-                    }
-                };
-                thread.start();
-
+                User loginUser = response.body();
                 loginUser.toString();
                 storyUserInfo(loginUser.getUserName(), loginUser.getId(), loginUser.getToken());
                 FriendManager.getInstance().setFriendList(loginUser.getFriends());
