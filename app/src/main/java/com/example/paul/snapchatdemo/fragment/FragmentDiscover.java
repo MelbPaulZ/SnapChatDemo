@@ -117,7 +117,6 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
                 updateDiscovery();
             }
         }, 3000);
-        updateDiscovery();
     }
 
     private void gotoUrlAndUpdate(int index){
