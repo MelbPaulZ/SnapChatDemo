@@ -46,7 +46,7 @@ public class StoryAdapter extends ArrayAdapter<Story> implements Filterable {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        final Story story = storyList.get(position);
+        final Story story = filteredStoryList.get(position);
         View view = LayoutInflater.from(context).inflate(resource, null);
         TextView textView = (TextView) view.findViewById(R.id.friend_stories_text);
         textView.setText(story.getStoryText());
