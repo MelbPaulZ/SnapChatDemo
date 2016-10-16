@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
+import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.firebase.FirebaseMessagingService;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
 import com.example.paul.snapchatdemo.fragment.FragmentAddedme;
@@ -30,6 +31,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentMemories;
 import com.example.paul.snapchatdemo.fragment.FragmentResultAddedme;
 import com.example.paul.snapchatdemo.fragment.FragmentResultFriend;
+import com.example.paul.snapchatdemo.fragment.FragmentShowImageTimer;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
 import com.example.paul.snapchatdemo.utils.UserUtil;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentAddaddressbook fragmentAddaddressbook;
     private FragmentAddusername fragmentAddusername;
     private FragmentChat fragmentChat;
+    private FragmentShowImageTimer fragmentShowImageTimer;
 
     private MainActivityPresenter presenter;
 
@@ -119,8 +122,15 @@ public class MainActivity extends AppCompatActivity {
 
         // redirect to chat screen
 //        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
+
         getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
         getFragmentManager().beginTransaction().show(fragmentChat).commit();
+
+//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentShowImageTimer).commit();
+//        getFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
+
+//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
+//        getFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -130,7 +140,13 @@ public class MainActivity extends AppCompatActivity {
                     Bundle extras = intent.getExtras();
                     if(extras != null){
                         String message = (String)extras.get("message");
-                        fragmentChat.addMessageListItems(message,false);
+                        String message_type = (String)extras.get("message_type");
+                        if (message_type.equals("1")) {
+                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT);
+                        }
+                        else {
+                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_IMG_VIEW);
+                        }
                     }
                 }
                 else {
@@ -156,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentCamera = new FragmentCamera();
         fragmentImageEditor = new FragmentImageEditor();
         fragmentChat = new FragmentChat();
-
+        fragmentShowImageTimer = new FragmentShowImageTimer();
     }
 
     public FragmentMain getFragmentMain(){
@@ -400,6 +416,12 @@ public class MainActivity extends AppCompatActivity {
         else{
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentMain).commit();
         }
+    }
+
+    public void fromChatScreenToShowImage(){
+        // ask paul...
+//        getSupportFragmentManager().beginTransaction().hide(fragmentChat).commit();
+//        getSupportFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
     }
 
     @Override

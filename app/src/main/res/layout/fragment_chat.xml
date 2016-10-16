@@ -26,24 +26,30 @@
             android:layout_height="wrap_content"
             android:singleLine="true"
             android:imeOptions="actionSend"
-            android:background="@android:color/transparent"
+            android:padding="5dp"
+            android:background="@drawable/edittext_top_line"
             android:ems="10"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add Image"
-                android:id="@+id/addImageButton"/>
+            <ImageButton
+                android:id="@+id/addImageButton"
+                android:src="@drawable/chat_attach_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:background="@null"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Register Token"
-                android:id="@+id/regTokenButton"/>
+                android:id="@+id/regTokenButton"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -64,11 +70,15 @@
                 android:stretchMode="columnWidth"
                 android:numColumns="4"/>
 
-            <Button
+            <ImageButton
                 android:id="@+id/sendImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Send Image" />
+                android:src="@drawable/chat_send_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                android:background="@null"
+                android:layout_margin="5dp"/>
 
         </LinearLayout>
 
