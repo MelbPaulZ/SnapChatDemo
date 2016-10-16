@@ -1,6 +1,7 @@
 package com.example.paul.snapchatdemo.chat;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,10 @@ public class ChatMessageAdapter extends BaseAdapter {
 
     private final Context context;
     private final LayoutInflater inflater;
+    private static int imageWidth;
+    private static int imageHeight;
+    private static int bubbleWidth;
+    private static int bubbleSpacerWidth;
 
     public ChatMessageAdapter(Context context) {
         this.context = context;
@@ -28,6 +33,12 @@ public class ChatMessageAdapter extends BaseAdapter {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.viewModels = viewModels;
+
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        imageWidth = metrics.widthPixels / 2;
+        imageHeight = metrics.heightPixels / 2;
+        bubbleWidth = (int) (metrics.widthPixels * 0.8);
+        bubbleSpacerWidth = (int) (metrics.widthPixels * 0.15);
     }
 
     public List<ChatMessageModel> viewmodels() {
@@ -63,7 +74,7 @@ public class ChatMessageAdapter extends BaseAdapter {
             convertView = this.inflater.inflate(ChatMessageRow.LAYOUT, parent, false);
 
             // In that case we also need to create a new row and attach it to the newly created View
-            row = new ChatMessageRow(this.context, convertView);
+            row = new ChatMessageRow(this.context, convertView, imageWidth, imageHeight, bubbleWidth, bubbleSpacerWidth);
             convertView.setTag(row);
         }
 

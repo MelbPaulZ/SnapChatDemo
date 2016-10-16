@@ -4,9 +4,12 @@ package com.example.paul.snapchatdemo.bean;
  * Created by Paul on 10/10/16.
  */
 public class Story {
+    public final static int STORY_SECRET = 1;
+    public final static int STORY_NOT_SECRET = 0;
     private String id;
     private String storyText;
     private String image;
+    private int isSecret;
 
     public Story(){}
 
@@ -36,5 +39,13 @@ public class Story {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getIsSecret() {
+        return isSecret;
+    }
+
+    public void setIsSecret(int isSecret) {
+        this.isSecret = isSecret;
     }
 }

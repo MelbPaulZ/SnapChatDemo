@@ -12,5 +12,5 @@ public interface ChatApi {
     Call<User> sendMessage(@Query("sender_user_id") String senderUserId,
                         @Query("receiver_user_id") String receiverUserId,
                         @Query("chat_message") String chatMessage,
-                        @Query("messageType") String messageType);
+                        @Query("message_type") String messageType);
 }

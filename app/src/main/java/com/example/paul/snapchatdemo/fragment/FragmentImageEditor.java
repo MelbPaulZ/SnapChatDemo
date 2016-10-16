@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.imageeditor.CanvasView;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +43,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class FragmentImageEditor extends Fragment {
+public class FragmentImageEditor extends android.support.v4.app.Fragment {
     /**
      * Initialize fragment
      */
@@ -575,6 +576,7 @@ public class FragmentImageEditor extends Fragment {
             @Override
             public void onClick(View view) {
                 // TODO: redirect to pick friends. ask paul
+                ((MainActivity)getActivity()).fromImageEditorToSelectFriends();
             }
         };
     }

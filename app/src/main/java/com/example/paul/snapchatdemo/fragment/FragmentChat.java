@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,6 +31,7 @@ import com.example.paul.snapchatdemo.chat.ImageGaleryAdapter;
 import com.example.paul.snapchatdemo.chat.Token;
 import com.example.paul.snapchatdemo.firebase.FirebaseStorageService;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
+import com.example.paul.snapchatdemo.utils.UserUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +69,9 @@ public class FragmentChat extends Fragment {
     static List<ChatMessageModel>  chatMessageList;
     static ChatMessageAdapter chatMessageAdapter;
 
-    Button addImageButton;
+    ImageButton addImageButton;
     Button regTokenButton;
-    Button sendImageButton;
+    ImageButton sendImageButton;
 
     GridView grdImages;
     ImageGaleryAdapter adapterImage;
@@ -113,7 +115,7 @@ public class FragmentChat extends Fragment {
             }
         });
 
-        addImageButton = (Button) root.findViewById(R.id.addImageButton);
+        addImageButton = (ImageButton) root.findViewById(R.id.addImageButton);
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -121,15 +123,12 @@ public class FragmentChat extends Fragment {
             }
         });
 
-        sendImageButton = (Button) root.findViewById(R.id.sendImageButton);
+        sendImageButton = (ImageButton) root.findViewById(R.id.sendImageButton);
         sendImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // send image to google server
                 List<String> imageDownloadURL = sendImage();
-
-                // send the image url to the receiver
-
             }
         });
 
@@ -164,16 +163,9 @@ public class FragmentChat extends Fragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-
-
-
-
-                    // this is for getting data back, asynchronous doing this task
-
-
                     // add message to the message list
                     if (messageText.getText() != null) {
-                        String inputMessage = messageText.getText().toString();
+                        final String inputMessage = messageText.getText().toString();
                         if (!inputMessage.isEmpty()) {
 
                             // TODO: still using static data
@@ -187,20 +179,19 @@ public class FragmentChat extends Fragment {
                                 @Override
                                 public void onResponse(Call<User> call, Response<User> response) {
                                     // send message is successful
+                                    // add message to message list
+                                    messageText.setText(null);
+                                    addMessageListItems(inputMessage, false, 1);
                                 }
 
                                 @Override
                                 public void onFailure(Call<User> call, Throwable t) {
-                                    // send message is failed, put message on the queue ?
-
-                                    // show command to user to resend message
-
+                                    // send message is failed
+                                    // TODO: put message on the queue ?
+                                    messageText.setText(null);
+                                    addMessageListItems(inputMessage, false, 2);
                                 }
                             });
-
-                            // add message to message list
-                            messageText.setText(null);
-                            addMessageListItems(inputMessage, false);
                         }
                     }
 
@@ -211,13 +202,13 @@ public class FragmentChat extends Fragment {
         });
     }
 
-    public void addMessageListItems(String input, boolean isImageURL){
+    public void addMessageListItems(String input, boolean isImageURL, int messageType){
         ChatMessageModel chatMessage;
         if (isImageURL) {
-            chatMessage = new ChatMessageModel("",input);
+            chatMessage = new ChatMessageModel("", input, messageType);
         }
         else {
-            chatMessage = new ChatMessageModel(input,"none");
+            chatMessage = new ChatMessageModel(input, "none", messageType);
         }
 
         chatMessageList.add(chatMessage);
@@ -226,7 +217,7 @@ public class FragmentChat extends Fragment {
 
     public void registerToken() {
         String token = Token.generateToken();
-        Token.registerToken(token, "4");
+        Token.registerToken(token, UserUtil.getId());
     }
 
     public void showAddImageFragment() {
@@ -261,6 +252,15 @@ public class FragmentChat extends Fragment {
     }
 
     public List<String> sendImage() {
+        // somehow we always need to register token before sending image.
+        // otherwise, its failed
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                registerToken();
+            }
+        }).start();
+
         String pathPrefix = "file://";
         Map<String,String> selectedImagePath = adapterImage.getSelectedImagePath();
         Set<String> keys = selectedImagePath.keySet();
@@ -268,13 +268,40 @@ public class FragmentChat extends Fragment {
 
         for (String imageURLPath:keys) {
             // upload image to server
-            String localImageFileName = pathPrefix+imageURLPath;
-            String urlDownload = FirebaseStorageService.uploadImage(localImageFileName);
+            final String localImageFileName = pathPrefix+imageURLPath;
+            final String urlDownload = FirebaseStorageService.uploadImage(localImageFileName);
             imageURLDownload.add(urlDownload);
             System.out.println("urlDownload:"+urlDownload);
 
-            // upload image to sender chat screen
-            addMessageListItems(localImageFileName,true);
+            if (urlDownload!=null) {
+                // send the image url to the receiver
+                // TODO: still using static data
+                String senderUserId = "2";
+                String receiverUserId = "4";
+                String messageType = "2";
+
+                // send message to server
+                ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);
+                chatApi.sendMessage(senderUserId, receiverUserId, urlDownload, messageType).enqueue(new Callback<User>() {
+                    @Override
+                    public void onResponse(Call<User> call, Response<User> response) {
+                        // send message is successful
+                        // upload image to sender chat screen
+                        addMessageListItems(localImageFileName, true, 3);
+                    }
+
+                    @Override
+                    public void onFailure(Call<User> call, Throwable t) {
+                        // send message to receiver is failed, ask user to retry
+                        addMessageListItems(localImageFileName, true, 4);
+                    }
+                });
+            }
+            else {
+                // upload image failed, ask user to retry
+                addMessageListItems(localImageFileName, true, 4);
+            }
+
         }
 
         imageLayout.setVisibility(View.GONE);

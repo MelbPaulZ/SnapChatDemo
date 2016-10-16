@@ -21,10 +21,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
-import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
+import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.firebase.FirebaseMessagingService;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
 import com.example.paul.snapchatdemo.fragment.FragmentAddedme;
@@ -33,11 +33,13 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
 import com.example.paul.snapchatdemo.fragment.FragmentCamera;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.example.paul.snapchatdemo.fragment.FragmentCreatestory;
+import com.example.paul.snapchatdemo.fragment.FragmentFriendSelection;
 import com.example.paul.snapchatdemo.fragment.FragmentImageEditor;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentMemories;
 import com.example.paul.snapchatdemo.fragment.FragmentResultAddedme;
 import com.example.paul.snapchatdemo.fragment.FragmentResultFriend;
+import com.example.paul.snapchatdemo.fragment.FragmentShowImageTimer;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
 import com.example.paul.snapchatdemo.utils.UserUtil;
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentAddaddressbook fragmentAddaddressbook;
     private FragmentAddusername fragmentAddusername;
     private FragmentChat fragmentChat;
+    private FragmentShowImageTimer fragmentShowImageTimer;
 
     private MainActivityPresenter presenter;
 
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentCamera fragmentCamera;
     private FragmentImageEditor fragmentImageEditor;
     private FragmentCreatestory fragmentCreatestory;
+    private FragmentFriendSelection fragmentFriendSelection;
 
     private String userId;
     private String username;
@@ -139,8 +143,15 @@ public class MainActivity extends AppCompatActivity {
 
         // redirect to chat screen
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
-        //getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
-        //getFragmentManager().beginTransaction().show(fragmentChat).commit();
+//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+//        getFragmentManager().beginTransaction().show(fragmentChat).commit();
+
+
+//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentShowImageTimer).commit();
+//        getFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
+
+//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
+//        getFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -150,7 +161,13 @@ public class MainActivity extends AppCompatActivity {
                     Bundle extras = intent.getExtras();
                     if(extras != null){
                         String message = (String)extras.get("message");
-                        //fragmentChat.addMessageListItems(message,false);
+                        String message_type = (String)extras.get("message_type");
+                        if (message_type.equals("1")) {
+                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT);
+                        }
+                        else {
+                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_IMG_VIEW);
+                        }
                     }
                 }
                 else {
@@ -178,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentChat = new FragmentChat();
         fragmentCreatestory  = new FragmentCreatestory();
 
+        fragmentShowImageTimer = new FragmentShowImageTimer();
     }
 
     public FragmentMain getFragmentMain(){
@@ -228,11 +246,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void fromCameraToEditor(String path){
 
-//        fragmentImageEditor.imageCanvasBackgroundPath = path;
-//        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commitAllowingStateLoss();
-//         getFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
-        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
-        getFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
+        fragmentImageEditor.imageCanvasBackgroundPath = path;
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commitAllowingStateLoss();
+        if (!fragmentImageEditor.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commitAllowingStateLoss();
+        }else {
+            getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
+        }
     }
 
 
@@ -322,6 +342,20 @@ public class MainActivity extends AppCompatActivity {
         else{
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentResultFriend).commit();
         }
+    }
+
+    public void fromImageEditorToSelectFriends(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).commit();
+        if (!fragmentFriendSelection.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentFriendSelection).commit();
+        }else{
+            getSupportFragmentManager().beginTransaction().show(fragmentFriendSelection).commit();
+        }
+    }
+
+    public void fromFriendSelectionToContact(){
+        fragmentMain.setPage(2); // the third page is contact page
+        getSupportFragmentManager().beginTransaction().hide(fragmentFriendSelection).show(fragmentMain).commit();
     }
 
     public void fromUserscreenToAddedme(){
@@ -443,14 +477,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void fromFriendSelectionToMemory() {
+        getSupportFragmentManager().beginTransaction().hide(fragmentFriendSelection).show(fragmentMain).commit();
+    }
+
+    public void fromChatScreenToShowImage(){
+
+    }
+
     @Override
-    protected void onResume() {
+    protected void onResume(){
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
                 new IntentFilter(FirebaseMessagingService.REGISTRATION_SUCCESS));
     }
     @Override
-    protected void onPause() {
+    protected void onPause(){
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
     }

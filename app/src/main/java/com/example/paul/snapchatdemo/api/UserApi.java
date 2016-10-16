@@ -25,8 +25,7 @@ import retrofit2.http.Query;
 public interface UserApi {
     // this should for user register
     @PUT("register3.php?")
-    Call<User> register(@Query("id") String id, @Query("token") String token ,
-                   @Query("username") String username, @Query("method") String method);
+    Call<User> register(@Query("token") String token , @Query("username") String username, @Query("password") String password);
 
     // this is for user login
     @GET("login.php?")
