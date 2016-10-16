@@ -18,6 +18,8 @@ import com.example.paul.snapchatdemo.bean.C;
 import com.example.paul.snapchatdemo.bean.Friendship;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
 
+import java.util.Calendar;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,6 +71,7 @@ public class FragmentResultFriend extends Fragment implements View.OnClickListen
                 username=((MainActivity)getActivity()).getUsername();
                 friendId=((MainActivity)getActivity()).getFriend_userid();
                 friendUsername=((MainActivity)getActivity()).getFriendUsername();
+
                 Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "sending request...", Toast.LENGTH_SHORT).show();
 
                 // get remote service

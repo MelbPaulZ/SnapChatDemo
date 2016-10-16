@@ -28,6 +28,7 @@ import com.example.paul.snapchatdemo.api.UserApi;
 import com.example.paul.snapchatdemo.bean.C;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
 import com.example.paul.snapchatdemo.bean.PhotoStory;
+import com.example.paul.snapchatdemo.firebase.FirebaseStorageService;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
 
 import java.io.ByteArrayOutputStream;
@@ -36,7 +37,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,7 +122,10 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 startActivity(email);
                 break;
             case R.id.create_story:
-                /*createstory();*/
+                String imageUrl=uploadImage();
+                ((MainActivity)getActivity()).setImageUrl(imageUrl);
+                ((MainActivity)getActivity()).fromMemoryToCreateStory();
+                //createstory(imageUrl);
 
                 break;
             case R.id.camera:
@@ -127,10 +139,45 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
         ((MainActivity)getActivity()).fromMainToCamera();
     }
 
-    public void createstory2(){
+    public void createstory(String uploadImg){
+        if(uploadImg==null){
+            uploadImg="http://seeklogo.com/images/S/snapchat-ghost-logo-B618EE0704-seeklogo.com.png";
+        }
+        System.out.println("uploadImg:"+uploadImg);
+        String id= ((MainActivity)getActivity()).getUserId();
+        // get remote service
+        UserApi userApi = HttpUtil.accessServer(UserApi.class);
+        String isSecret="0";
+        String story_text="Look at my story!";
+
+        // this is for getting data back, asynchronous doing this task
+        userApi.createstory(id, uploadImg, isSecret,story_text, C.methods.METHOD_CREATESTORY).enqueue(new Callback<ArrayList<PhotoStory>>() {
+            @Override
+            public void onResponse(Call<ArrayList<PhotoStory>> call, Response<ArrayList<PhotoStory>> response) {
+                Log.i(TAG, "onResponse: " + response.body().toString());
+                Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
+                        "create story successfully", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<PhotoStory>> call, Throwable t) {
+                Log.i(TAG, "onFailure: " + "userApi failure");
+                Toast.makeText(FragmentMemories.this.getActivity().getBaseContext(),
+                        "create story failed", Toast.LENGTH_SHORT).show();
+            }
+        });
         }
 
-    public void createstory(){
+    public String uploadImage() {
+        String pathPrefix="file://";
+        String localImageFile=pathPrefix+absolutePath;
+        String urlDownload = FirebaseStorageService.uploadImage(localImageFile);
+        System.out.println("urlDownloadMemories:"+urlDownload);
+        return urlDownload;
+    }
+
+    /*public void createstory(){
         String myBase64Image = encodeToBase64(bitmap, Bitmap.CompressFormat.JPEG, 100);
         System.out.println("myBase64Image.length():"+myBase64Image.length());
         String test="123456";
@@ -165,7 +212,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                                 "create story failed", Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
+    }*/
 
     public static boolean compressBiamp(Bitmap bitmap, String compressPath, int quality) {
         FileOutputStream stream = null;
@@ -198,11 +245,11 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     }
 
 //    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    public void ActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (resultCode == getActivity().RESULT_OK) {//从相册选择照片不裁切
 //            try {
 //                Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
-//                System.out.println("Uri:" + selectedImage);
+//                System.out.println("Uri:" + selectedImage);RR
 //                String[] filePathColumn = {MediaStore.Images.Media.DATA};
 //                Cursor cursor = getContext().getContentResolver().query(selectedImage,
 //                        filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
@@ -226,24 +273,26 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
 //    }
 
     public void getPhoto(Intent data){
-        Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
-        System.out.println("Uri:" + selectedImage);
-        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContext().getContentResolver().query(selectedImage,
-                filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        absolutePath = cursor.getString(columnIndex);  //获取照片路径
-        System.out.println("String:" + absolutePath);
-        cursor.close();
-        //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
-        try {
-            bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if(data!=null) {
+            Uri selectedImage = data.getData(); //获取系统返回的照片的Uri
+            System.out.println("Uri:" + selectedImage);
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContext().getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);//从系统表中查询指定Uri对应的照片
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            absolutePath = cursor.getString(columnIndex);  //获取照片路径
+            System.out.println("String:" + absolutePath);
+            cursor.close();
+            //Bitmap bitmap= BitmapFactory.decodeFile(absolutePath);
+            try {
+                bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(selectedImage));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            System.out.println("bitmap:" + bitmap);
+            picImageView.setImageBitmap(bitmap);
         }
-        System.out.println("bitmap:"+bitmap);
-        picImageView.setImageBitmap(bitmap);
     }
 
 

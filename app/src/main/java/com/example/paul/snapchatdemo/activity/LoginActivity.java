@@ -51,12 +51,12 @@ public class LoginActivity  extends AppCompatActivity{
 
         final TextView register = (TextView) findViewById(R.id.register_tv);
 
-        register.setOnClickListener(new View.OnClickListener() {
+/*        register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 presenter.signup(userName , passWord);
             }
-        });
+        });*/
 
 
         login.setOnClickListener(new View.OnClickListener() {

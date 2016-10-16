@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="back"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/createstoryBt"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <EditText
+        android:id="@+id/story_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Say something about the story..."
+        android:textAllCaps="false"
+        />
+
+    <RadioGroup
+        android:id="@+id/choice_mode"
+        android:checkedButton="@+id/secret"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/secret_rb"
+            android:text="is secret"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <RadioButton
+            android:id="@+id/public_rb"
+            android:text="is public"
+            android:layout_marginLeft="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/create_my_story"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Story Now"
+        android:textAllCaps="false"/>
+
+
+</LinearLayout>

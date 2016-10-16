@@ -271,6 +271,7 @@ public class FragmentChat extends Fragment {
             String localImageFileName = pathPrefix+imageURLPath;
             String urlDownload = FirebaseStorageService.uploadImage(localImageFileName);
             imageURLDownload.add(urlDownload);
+            System.out.println("urlDownload:"+urlDownload);
 
             // upload image to sender chat screen
             addMessageListItems(localImageFileName,true);

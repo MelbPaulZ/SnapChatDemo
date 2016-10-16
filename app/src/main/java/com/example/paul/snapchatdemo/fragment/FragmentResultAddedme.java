@@ -18,6 +18,8 @@ import com.example.paul.snapchatdemo.bean.C;
 import com.example.paul.snapchatdemo.bean.Friendship;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
 
+import java.util.Calendar;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -65,13 +67,16 @@ public class FragmentResultAddedme extends Fragment implements View.OnClickListe
             case R.id.add_button:
                 id=((MainActivity)getActivity()).getUserId();
                 friendUsername=((MainActivity)getActivity()).getFriendUsername();
+                Calendar calendar = Calendar.getInstance();
+                long currentTime = calendar.getTimeInMillis();
                 Toast.makeText(FragmentResultAddedme.this.getActivity().getBaseContext(), "sending request...", Toast.LENGTH_SHORT).show();
-
+                String time= Long.toString(currentTime);
+                System.out.println("time:time:"+time);
                 // get remote service
                 UserApi userApi = HttpUtil.accessServer(UserApi.class);
 
                 // this is for getting data back, asynchronous doing this task
-                userApi.addedmeagree(id,friendUsername, C.methods.METHOD_ADDEDMEAGREE).enqueue(new Callback<Friendship>() {
+                userApi.addedmeagree(id,friendUsername,time, C.methods.METHOD_ADDEDMEAGREE).enqueue(new Callback<Friendship>() {
                     @Override
                     public void onResponse(Call<Friendship> call, Response<Friendship> response) {
                         Log.i(TAG, "onResponse: " + response.body().toString());

@@ -112,7 +112,7 @@ public class FragmentAddaddressbook extends Fragment implements View.OnClickList
                     userApi.searchtelephone(telephone, C.methods.METHOD_SEARCHTELEPHONE).enqueue(new Callback<User>() {
                         @Override
                         public void onResponse(Call<User> call, Response<User> response) {
-                            Log.i(TAG, "onResponse: " + response.body().toString());
+                            //Log.i(TAG, "onResponse: " + response.body().toString());
                             String friendusername=response.body().getUserName();
                             String frienduserid=response.body().getId();
                             ((MainActivity)getActivity()).setFriendUsername(friendusername);

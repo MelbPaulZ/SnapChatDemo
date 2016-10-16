@@ -7,6 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -14,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
@@ -25,6 +32,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentAddfriends;
 import com.example.paul.snapchatdemo.fragment.FragmentAddusername;
 import com.example.paul.snapchatdemo.fragment.FragmentCamera;
 import com.example.paul.snapchatdemo.fragment.FragmentChat;
+import com.example.paul.snapchatdemo.fragment.FragmentCreatestory;
 import com.example.paul.snapchatdemo.fragment.FragmentImageEditor;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentMemories;
@@ -53,12 +61,24 @@ public class MainActivity extends AppCompatActivity {
     private FragmentUserscreen fragmentUserscreen;
     private FragmentCamera fragmentCamera;
     private FragmentImageEditor fragmentImageEditor;
+    private FragmentCreatestory fragmentCreatestory;
 
     private String userId;
     private String username;
     private String friend_username;
     private String friend_userid;
     private ArrayList<FriendPhone> friendPhoneList;
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+
     public ArrayList<FriendPhone> getFriendPhoneList() {
         return friendPhoneList;
     }
@@ -118,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
         initFragments();
 
         // redirect to chat screen
-//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
-        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
-        getFragmentManager().beginTransaction().show(fragmentChat).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
+        //getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+        //getFragmentManager().beginTransaction().show(fragmentChat).commit();
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -130,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     Bundle extras = intent.getExtras();
                     if(extras != null){
                         String message = (String)extras.get("message");
-                        fragmentChat.addMessageListItems(message,false);
+                        //fragmentChat.addMessageListItems(message,false);
                     }
                 }
                 else {
@@ -156,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentCamera = new FragmentCamera();
         fragmentImageEditor = new FragmentImageEditor();
         fragmentChat = new FragmentChat();
+        fragmentCreatestory  = new FragmentCreatestory();
 
     }
 
@@ -395,6 +416,26 @@ public class MainActivity extends AppCompatActivity {
     public void fromUserscreenToMyfriends(){
         getSupportFragmentManager().beginTransaction().hide(fragmentUserscreen).commit();
         if(fragmentUserscreen.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentMain).commit();
+        }
+        else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentMain).commit();
+        }
+    }
+
+    public void fromMemoryToCreateStory(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
+        if(fragmentCreatestory.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentCreatestory).commit();
+        }
+        else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentCreatestory).commit();
+        }
+    }
+
+    public void fromCreateStoryToMemory(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentCreatestory).commit();
+        if(fragmentMain.isAdded()){
             getSupportFragmentManager().beginTransaction().show(fragmentMain).commit();
         }
         else{

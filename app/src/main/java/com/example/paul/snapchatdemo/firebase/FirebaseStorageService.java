@@ -26,6 +26,7 @@ public class FirebaseStorageService {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Uri downloadURL = taskSnapshot.getMetadata().getDownloadUrl();
                 imageURLDownload = downloadURL.toString();
+
             }
         });
 
