@@ -31,7 +31,6 @@ public class HttpUtil {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         return retrofit.create(serviceClass);
-
     }
 
 
