@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +20,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.adapters.StoryAdapter;
 import com.example.paul.snapchatdemo.bean.DiscoveryUrl;
+import com.example.paul.snapchatdemo.helpers.OnPageSlideListener;
 import com.example.paul.snapchatdemo.manager.StoryManager;
 import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.example.paul.snapchatdemo.widgets.ExpandedListView;
@@ -33,7 +37,7 @@ import java.util.ArrayList;
 /**
  * Created by Paul on 7/09/2016.
  */
-public class FragmentStories extends Fragment implements SearchView.OnQueryTextListener,View.OnClickListener {
+public class FragmentStories extends Fragment implements SearchView.OnQueryTextListener,View.OnClickListener, OnPageSlideListener {
     private View root;
     private StoryAdapter storyAdapter;
     private CustomTabsIntent customTabsIntent;
@@ -52,6 +56,7 @@ public class FragmentStories extends Fragment implements SearchView.OnQueryTextL
         initRecommendTopics();
         initSubscriptionScrollView();
         initSearch();
+        initListeners();
     }
 
     public void initSubscriptionScrollView() {
@@ -122,6 +127,24 @@ public class FragmentStories extends Fragment implements SearchView.OnQueryTextL
         searchView.setOnQueryTextListener(this);
     }
 
+    private void initListeners(){
+        TextView left = (TextView) root.findViewById(R.id.story_left);
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                movePrevious();
+            }
+        });
+
+        TextView right = (TextView) root.findViewById(R.id.story_right);
+        right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                moveNext();
+            }
+        });
+    }
+
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -176,5 +199,17 @@ public class FragmentStories extends Fragment implements SearchView.OnQueryTextL
     private void gotoUrl(int index){
         String url = UrlManager.getInstance().getUrls().get(index).getTextUrl();
         customTabsIntent.launchUrl(getActivity(), Uri.parse(url));
+    }
+
+    @Override
+    public void moveNext() {
+        ViewPager viewPager = ((MainActivity)getActivity()).getFragmentMain().getViewPager();
+        viewPager.setCurrentItem(viewPager.getCurrentItem()+1);
+    }
+
+    @Override
+    public void movePrevious() {
+        ViewPager viewPager = ((MainActivity)getActivity()).getFragmentMain().getViewPager();
+        viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
     }
 }

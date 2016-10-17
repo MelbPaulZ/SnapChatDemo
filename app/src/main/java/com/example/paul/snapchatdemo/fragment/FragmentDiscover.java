@@ -14,14 +14,18 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.bean.DiscoveryUrl;
+import com.example.paul.snapchatdemo.helpers.OnPageSlideListener;
 import com.example.paul.snapchatdemo.manager.UrlManager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -34,7 +38,7 @@ import java.util.List;
 /**
  * Created by Paul on 24/08/2016.
  */
-public class FragmentDiscover extends Fragment implements View.OnClickListener {
+public class FragmentDiscover extends Fragment implements View.OnClickListener, OnPageSlideListener {
     private View root;
     private CustomTabsIntent customTabsIntent;
     private ImageView imageView1, imageView2, imageView3, imageView4, imageView5, imageView6, imageView7, imageView8;
@@ -51,6 +55,7 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initDiscovers();
+        initListeners();
     }
 
 
@@ -119,6 +124,16 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
         }, 3000);
     }
 
+    private void initListeners(){
+        TextView left = (TextView) root.findViewById(R.id.discover_left);
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                movePrevious();
+            }
+        });
+    }
+
     private void gotoUrlAndUpdate(int index){
         String url = UrlManager.getInstance().getUrls().get(index).getTextUrl();
         int topic = UrlManager.getInstance().getUrls().get(index).getTopic();
@@ -135,5 +150,16 @@ public class FragmentDiscover extends Fragment implements View.OnClickListener {
         Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(5).getUrl()).into(imageView6);
         Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
         Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
+    }
+
+    @Override
+    public void moveNext() {
+
+    }
+
+    @Override
+    public void movePrevious() {
+        ViewPager viewPager = ((MainActivity)getActivity()).getFragmentMain().getViewPager();
+        viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
     }
 }

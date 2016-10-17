@@ -80,6 +80,13 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
                 moveNext();
             }
         });
+        TextView left = (TextView) root.findViewById(R.id.contact_left);
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                movePrevious();
+            }
+        });
     }
 
 

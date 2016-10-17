@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:text="Chat"
+                android:text="Contact List"
                 android:textSize="@dimen/title_size" />
             <TextView
                 android:id="@+id/contact_right"
