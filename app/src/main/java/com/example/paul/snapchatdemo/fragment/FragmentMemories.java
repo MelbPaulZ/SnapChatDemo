@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Base64;
@@ -19,17 +20,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
+import com.example.paul.snapchatdemo.api.ChatApi;
 import com.example.paul.snapchatdemo.api.UserApi;
 import com.example.paul.snapchatdemo.bean.C;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
 import com.example.paul.snapchatdemo.bean.PhotoStory;
+import com.example.paul.snapchatdemo.bean.User;
+import com.example.paul.snapchatdemo.chat.Token;
 import com.example.paul.snapchatdemo.firebase.FirebaseStorageService;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
+import com.example.paul.snapchatdemo.utils.UserUtil;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -41,6 +52,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -57,14 +69,16 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private View root;
     private final String TAG = "Memories";
 
-    private Button chooseFromAlbum;
-    private Button deleteFromAlbum;
-    private Button socialSharePhoto;
-    private Button createstory;
-    private Button camera;
+    private ImageButton chooseFromAlbum;
+    private ImageButton deleteFromAlbum;
+    private ImageButton socialSharePhoto;
+    private ImageButton createstory;
+    private ImageButton camera;
     private ImageView picImageView;
     private String absolutePath;
     private Bitmap bitmap;
+    private StorageReference mStorageRef;
+    private String downloadUrl;
     public static final int PICK_PHOTO = 1;
 
     @Nullable
@@ -78,21 +92,22 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         initMemories();
     }
 
 
     public void initMemories(){
-        camera = (Button) root.findViewById(R.id.camera);
+        camera = (ImageButton) root.findViewById(R.id.camera);
         camera.setOnClickListener(this);
         picImageView = (ImageView) root.findViewById(R.id.View);
-        chooseFromAlbum = (Button) root.findViewById(R.id.choose_from_album);
+        chooseFromAlbum = (ImageButton) root.findViewById(R.id.choose_from_album);
         chooseFromAlbum.setOnClickListener(this);
-        deleteFromAlbum = (Button) root.findViewById(R.id.delete_from_album);
+        deleteFromAlbum = (ImageButton) root.findViewById(R.id.delete_from_album);
         deleteFromAlbum.setOnClickListener(this);
-        socialSharePhoto = (Button)root.findViewById(R.id.social_share_photo);
+        socialSharePhoto = (ImageButton)root.findViewById(R.id.social_share_photo);
         socialSharePhoto.setOnClickListener(this);
-        createstory = (Button)root.findViewById(R.id.create_story);
+        createstory = (ImageButton)root.findViewById(R.id.create_story);
         createstory.setOnClickListener(this);
 
     }
@@ -105,8 +120,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 break;
             case R.id.delete_from_album:
                 deleteImage();
-                getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(absolutePath))));
-                picImageView.setImageResource(R.drawable.ic_photo_loading);
+                picImageView.setImageResource(R.drawable.ic_loading);
                 break;
             case R.id.social_share_photo:
                 Intent email = new Intent(android.content.Intent.ACTION_SEND);
@@ -122,8 +136,11 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 startActivity(email);
                 break;
             case R.id.create_story:
-                String imageUrl=uploadImage();
-                ((MainActivity)getActivity()).setImageUrl(imageUrl);
+
+                //String imageUrl=uploadImage();
+                //((MainActivity)getActivity()).setImageUrl(imageUrl);
+                uploadImage2();
+                //((MainActivity)getActivity()).setAbsolutePath(absolutePath);
                 ((MainActivity)getActivity()).fromMemoryToCreateStory();
                 //createstory(imageUrl);
 
@@ -169,12 +186,56 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
         });
         }
 
+    public void uploadImage2(){
+        String pathPrefix = "file://";
+        String localImageFile=pathPrefix+absolutePath;
+        String fileName = UUID.randomUUID().toString();
+        final StorageReference serverPhotoRef = mStorageRef.child("photos").child(fileName);
+        Uri fileUri = Uri.parse(localImageFile);
+        serverPhotoRef.putFile(fileUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Uri downloadUri = taskSnapshot.getMetadata().getDownloadUrl();
+                            downloadUrl=downloadUri.toString();
+                            System.out.println("Test downloadUrl:"+downloadUrl);
+                            ((MainActivity)getActivity()).setImageUrl(downloadUrl);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                        }
+                    });
+
+    }
+
     public String uploadImage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                registerToken();
+            }
+        }).start();
         String pathPrefix="file://";
         String localImageFile=pathPrefix+absolutePath;
+        //String saveImgPath= "/storage/emulated/0/DCIM/100ANDRO/1.JPG";
+        //boolean flag=compressBiamp(bitmap,saveImgPath,30);
+        //String ImageFile=pathPrefix+saveImgPath;
         String urlDownload = FirebaseStorageService.uploadImage(localImageFile);
+/*        while(urlDownload==null){
+            urlDownload=FirebaseStorageService.uploadImage(localImageFile);
+            if(urlDownload!=null){
+                break;
+            }
+        }*/
         System.out.println("urlDownloadMemories:"+urlDownload);
         return urlDownload;
+    }
+
+    public void registerToken() {
+        String token = Token.generateToken();
+        Token.registerToken(token, UserUtil.getId());
     }
 
     /*public void createstory(){
@@ -297,14 +358,17 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
 
 
     public void deleteImage() {
-        File fdelete = new File(absolutePath);
-        if (fdelete.exists()) {
-            if (fdelete.delete()) {
-                Log.e("-->", "file Deleted :" + absolutePath);
-                callBroadCast();
-            } else {
-                Log.e("-->", "file not Deleted :" + absolutePath);
+        if(absolutePath!=null) {
+            File fdelete = new File(absolutePath);
+            if (fdelete.exists()) {
+                if (fdelete.delete()) {
+                    Log.e("-->", "file Deleted :" + absolutePath);
+                    callBroadCast();
+                } else {
+                    Log.e("-->", "file not Deleted :" + absolutePath);
+                }
             }
+            getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(absolutePath))));
         }
     }
 

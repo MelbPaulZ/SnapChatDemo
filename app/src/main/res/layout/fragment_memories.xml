@@ -8,39 +8,77 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.paul.snapchatdemo.activity.MainActivity" >
-    <Button
-        android:id="@+id/camera"
+    tools:context="com.example.paul.snapchatdemo.activity.MainActivity"
+    android:weightSum="1">
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Snapchat"
+            android:textSize="@dimen/title_size" />
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Camera"/>
-    <Button
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+
+        >
+        <ImageButton
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_camera"
+            android:layout_alignParentLeft="true"
+            android:layout_weight="1"
+            />
+        <ImageButton
         android:id="@+id/choose_from_album"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Choose Photo From Album" />
-    <Button
+        android:src="@drawable/ic_album"
+            android:layout_weight="1"
+            android:layout_toLeftOf="@+id/camera"/>
+        <ImageButton
         android:id="@+id/delete_from_album"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Delete Photo" />
-    <Button
-    android:id="@+id/social_share_photo"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:text="Social Share Photo" />
-    <Button
+        android:src="@drawable/ic_delete"
+            android:layout_weight="1"
+            android:layout_toLeftOf="@+id/choose_from_album"/>
+        <ImageButton
+        android:id="@+id/social_share_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_mail"
+            android:layout_weight="1"
+            android:layout_toLeftOf="@+id/delete_from_album"/>
+        <ImageButton
         android:id="@+id/create_story"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Create Story" />
+        android:src="@drawable/ic_story"
+            android:layout_weight="1"
+            android:layout_toLeftOf="@+id/social_share_photo"/>
 
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/View"
-        android:layout_width="wrap_content"
+        android:layout_width="286dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_photo_loading"
-        />
+        android:src="@drawable/ic_loading"
+        android:layout_weight="0.32"
+        android:layout_below="@+id/create_story"/>
+
+
 </LinearLayout>

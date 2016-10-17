@@ -74,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<FriendPhone> friendPhoneList;
     private String imageUrl;
 
+    public String getAbsolutePath() {
+        return absolutePath;
+    }
+
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
+    }
+
+    private String absolutePath;
+
     public String getImageUrl() {
         return imageUrl;
     }

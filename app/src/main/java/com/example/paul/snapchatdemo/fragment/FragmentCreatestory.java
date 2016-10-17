@@ -97,8 +97,10 @@ public class FragmentCreatestory extends Fragment implements View.OnClickListene
         switch (view.getId()) {
             case R.id.create_my_story:
                 story_text = storyText.getText().toString();
+                //String path=((MainActivity)getActivity()).getAbsolutePath();
                 uploadImg=((MainActivity)getActivity()).getImageUrl();
                 System.out.println("uploadImg:"+uploadImg);
+                //uploadImg=uploadImage(path);
                 if(uploadImg==null){
                     uploadImg="http://seeklogo.com/images/S/snapchat-ghost-logo-B618EE0704-seeklogo.com.png";
                 }
@@ -133,5 +135,21 @@ public class FragmentCreatestory extends Fragment implements View.OnClickListene
             default:
                 break;
         }
+    }
+    public String uploadImage(String path) {
+        String pathPrefix="file://";
+        String localImageFile=pathPrefix+path;
+        //String saveImgPath= "/storage/emulated/0/DCIM/100ANDRO/1.JPG";
+        //boolean flag=compressBiamp(bitmap,saveImgPath,30);
+        //String ImageFile=pathPrefix+saveImgPath;
+        String urlDownload = FirebaseStorageService.uploadImage(localImageFile);
+/*        while(urlDownload==null){
+            urlDownload=FirebaseStorageService.uploadImage(localImageFile);
+            if(urlDownload!=null){
+                break;
+            }
+        }*/
+        System.out.println("urlDownloadMemories:"+urlDownload);
+        return urlDownload;
     }
 }
