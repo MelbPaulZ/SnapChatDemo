@@ -434,7 +434,12 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     }
 
     public boolean isChattingWithUser(String userId) {
-        return receiverUserId.equals(userId);
+        if (receiverUserId!=null) {
+            return receiverUserId.equals(userId);
+        }
+        else {
+            return false;
+        }
     }
 
     public void retrySendingMessage(final ChatMessageModel chm) {
