@@ -11,33 +11,45 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
+import com.example.paul.snapchatdemo.api.PushMessageApi;
+import com.example.paul.snapchatdemo.bean.PushMessage;
+import com.example.paul.snapchatdemo.utils.HttpUtil;
+import com.example.paul.snapchatdemo.utils.UserUtil;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
-//    public static final String MESSAGE_TYPE_REGISTRATION = "MessageTypeRegistration";
-//    public static final String MESSAGE_TYPE_CHAT = "MessageTypeChat";
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-    public static final String REGISTRATION_SUCCESS = "MessageTypeRegistration";
+public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
+
+    public static final String RECEIVE_FIREBASE_CHAT_MESSAGE = "ReceiveFirebaseChatMessage";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        showNotification(remoteMessage.getData().get("sender"),
+        showNotification(remoteMessage.getData().get("sender_user_id"),
+                remoteMessage.getData().get("sender"),
                 remoteMessage.getData().get("chat_message"),
                 remoteMessage.getData().get("chat_message_type"),
                 remoteMessage.getData().get("chat_message_timer"));
     }
 
     //  show a notification for received message
-    private void showNotification(String sender, String message, String messageType, String messageTimer){
+    private void showNotification(String senderUserId, String sender, String message, String messageType, String messageTimer){
         if (!MainActivity.isAppCreated) {
-            // to be broadcasted
+            // user is not opening the app
+
+            // to be read on MainActivity.onPostCreate
+            // which is called when user tap the notification message on their phone
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("sender_user_id", senderUserId);
             intent.putExtra("chat_message", message);
             intent.putExtra("chat_message_type",messageType);
-            intent.putExtra("chat_message_timer",messageTimer);
+            intent.putExtra("chat_message_timer", messageTimer);
             PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
+            // create notification message
             Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             NotificationCompat.Builder noBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
@@ -49,19 +61,39 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0, noBuilder.build());
 
-            // put message into database
-
+            //Call api to put message into queue on server
+            pushMessageToQueue(UserUtil.getId(), senderUserId, message, messageType, messageTimer);
         }
         else {
-            Intent intentRece = new Intent(REGISTRATION_SUCCESS);
+            // user is opening the app
+            Intent intentRece = new Intent(RECEIVE_FIREBASE_CHAT_MESSAGE);
+            intentRece.putExtra("sender_user_id", senderUserId);
             intentRece.putExtra("chat_message", message);
             intentRece.putExtra("chat_message_type",messageType);
-            intentRece.putExtra("chat_message_timer",messageTimer);
+            intentRece.putExtra("chat_message_timer", messageTimer);
 
-            // broadcast the message to any receiver
+            // broadcast the message to receiver on MainActivity because we cannot control UI from here
             LocalBroadcastManager.getInstance(this).sendBroadcast(intentRece);
         }
     }
+
+    public static void pushMessageToQueue(String userId, String senderUserId, String chatMessage,
+                                          String chatMessageType, String chatMessageTimer) {
+
+        PushMessageApi pushMessageApi = HttpUtil.accessServer(PushMessageApi.class);
+        pushMessageApi.pushMessage(userId, senderUserId ,chatMessage, chatMessageType, chatMessageTimer).enqueue(new Callback<PushMessage>() {
+            @Override
+            public void onResponse(Call<PushMessage> call, Response<PushMessage> response) {
+                // do nothing
+            }
+
+            @Override
+            public void onFailure(Call<PushMessage> call, Throwable t) {
+                // do nothing
+            }
+        });
+    }
+
 
 }
 

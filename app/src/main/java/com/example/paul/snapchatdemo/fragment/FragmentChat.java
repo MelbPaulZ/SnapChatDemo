@@ -1,5 +1,6 @@
 package com.example.paul.snapchatdemo.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.api.ChatApi;
 import com.example.paul.snapchatdemo.bean.User;
 import com.example.paul.snapchatdemo.chat.ChatMessageAdapter;
@@ -76,7 +77,6 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     public static ChatMessageAdapter chatMessageAdapter;
 
     ImageButton addImageButton;
-    Button regTokenButton;
     ImageButton sendImageButton;
 
     GridView grdImages;
@@ -88,6 +88,11 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
     private StorageReference mStorageRef;
 
+    private String senderUserId;
+    public String receiverUserId;
+
+    private ImageButton backToContactButton;
+
     @Override
     public void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
@@ -96,6 +101,16 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        backToContactButton = (ImageButton)root.findViewById(R.id.backToContactButton);
+        backToContactButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                backToContactList();
+            }
+        });
+        
+        senderUserId = ((MainActivity)getActivity()).getUserId();
 
         loadingPanel = (ProgressBar) root.findViewById(R.id.loadingPanel);
 
@@ -112,21 +127,6 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
 
         grdImages= (GridView) root.findViewById(R.id.grdImages);
-
-
-        // setup button
-//        regTokenButton = (Button) root.findViewById(R.id.regTokenButton);
-//        regTokenButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        registerToken();
-//                    }
-//                }).start();
-//            }
-//        });
 
         addImageButton = (ImageButton) root.findViewById(R.id.addImageButton);
         addImageButton.setOnClickListener(new View.OnClickListener() {
@@ -179,12 +179,8 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                     if (messageText.getText() != null) {
                         final String inputMessage = messageText.getText().toString();
                         if (!inputMessage.isEmpty()) {
-
-                            // TODO: still using static data
-                            String senderUserId = "2";
-                            String receiverUserId = "4";
-                            String messageType = "1";
-                            final int messageTimer = 0; // this is text, so just use 0
+                            String messageType = ChatMessageModel.MSG_DATA_TEXT;
+                            final int messageTimer = 0; // this is text, so just use 0 for timer
 
                             // send message to server
                             ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);
@@ -200,7 +196,7 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                                 @Override
                                 public void onFailure(Call<User> call, Throwable t) {
                                     // send message is failed
-                                    // TODO: put message on the queue ?
+                                    // TODO: implement retry
                                     messageText.setText(null);
                                     addMessageListItems(inputMessage, false, 2, messageTimer);
                                 }
@@ -213,6 +209,17 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                 return handled;
             }
         });
+    }
+
+    private void backToContactList() {
+        // reset receiver id
+        receiverUserId = "-1";
+
+        // reset chat message list
+        chatMessageList.clear();
+
+        // redirect to contact screen
+        ((MainActivity)(Activity) getContext()).chatScreenToContact();
     }
 
     public void addMessageListItems(String input, boolean isImageURL, int messageType, int messageTimer){
@@ -232,11 +239,6 @@ public class FragmentChat extends android.support.v4.app.Fragment {
         chatMessageList.add(chatMessage);
         chatMessageAdapter.notifyDataSetChanged();
     }
-
-//    public void registerToken() {
-//        String token = Token.generateToken();
-//        Token.registerToken(token, UserUtil.getId());
-//    }
 
     public void showAddImageFragment() {
 
@@ -289,11 +291,10 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Uri downloadURL = taskSnapshot.getMetadata().getDownloadUrl();
                             // send the image url to the receiver
-                            // TODO: still using static data
-                            String senderUserId = "2";
-                            String receiverUserId = "4";
-                            String messageType = "2";
-                            String messageTimer = "9";
+                            String messageType = ChatMessageModel.MSG_DATA_IMG;
+                            // TODO: image from gallery is not using timer, so set it to zero
+                            // if camera button already added to chat screen, then we need to adjust this
+                            String messageTimer = "0";
 
                             // send message to server
                             ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);

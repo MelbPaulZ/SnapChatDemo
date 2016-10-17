@@ -1,6 +1,8 @@
 package com.example.paul.snapchatdemo.utils;
 
 import com.example.paul.snapchatdemo.bean.C;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
@@ -18,5 +20,19 @@ public class HttpUtil {
                 .build();
         return retrofit.create(serviceClass);
     }
+
+    public static <S> S accessServerWithGson(Class<S> serviceClass){
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(C.api.API_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        return retrofit.create(serviceClass);
+
+    }
+
 
 }

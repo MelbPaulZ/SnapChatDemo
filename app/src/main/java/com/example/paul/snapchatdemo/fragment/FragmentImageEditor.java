@@ -160,7 +160,9 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         imageCanvas = (CanvasView) root.findViewById(R.id.imageCanvas);
         imageCanvas.setDrawingCacheEnabled(true);
 
-        // TODO : still using static image
+        // TODO: probably need to rotate image
+//        http://stackoverflow.com/questions/20478765/how-to-get-the-correct-orientation-of-the-image-selected-from-the-default-image
+//        http://stackoverflow.com/questions/11026615/captured-photo-orientation-is-changing-in-android
         Bitmap workingBitmap = BitmapFactory.decodeFile(imageCanvasBackgroundPath);
         BitmapDrawable ob = new BitmapDrawable(getResources(), workingBitmap);
         imageCanvas.setBackground(ob);
