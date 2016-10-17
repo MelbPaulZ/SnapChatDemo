@@ -7,12 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -141,17 +135,19 @@ public class MainActivity extends AppCompatActivity {
         presenter.getFriendStroy();
         initFragments();
 
-        // redirect to chat screen
+        // original
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
-//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
-//        getFragmentManager().beginTransaction().show(fragmentChat).commit();
+
+        // verra: to test chat screen
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentShowImageTimer).commit();
+//        getSupportFragmentManager().beginTransaction().hide(fragmentShowImageTimer).commit();
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+
+        // verra: to test image editor
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
+//        getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
 
 
-//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentShowImageTimer).commit();
-//        getFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
-
-//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
-//        getFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
 
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -160,18 +156,25 @@ public class MainActivity extends AppCompatActivity {
 
                     Bundle extras = intent.getExtras();
                     if(extras != null){
-                        String message = (String)extras.get("message");
-                        String message_type = (String)extras.get("message_type");
-                        if (message_type.equals("1")) {
-                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT);
+                        String chatMessage = (String)extras.get("chat_message");
+                        String chatMessageType = (String)extras.get("chat_message_type");
+                        String chatMessageTimer = (String)extras.get("chat_message_timer");
+                        int messageTimer = Integer.parseInt(chatMessageTimer);
+
+                        // TODO: handle if user is on antoher screen
+                        if (chatMessageType.equals(ChatMessageModel.MSG_DATA_TEXT)) {
+                            // receive regular text
+                            fragmentChat.addMessageListItems(chatMessage,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT, messageTimer);
+                        }
+                        else if (messageTimer!=0){
+                            // receive a snap (image with timer)
+                            fragmentChat.addMessageListItems(chatMessage,true, ChatMessageModel.MSG_TYPE_OTHER_IMG_TIMER_VIEW, messageTimer);
                         }
                         else {
-                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_IMG_VIEW);
+                            // receive static image without timer
+                            fragmentChat.addMessageListItems(chatMessage,true, ChatMessageModel.MSG_TYPE_OTHER_IMG, messageTimer);
                         }
                     }
-                }
-                else {
-
                 }
             }
         };
@@ -253,6 +256,11 @@ public class MainActivity extends AppCompatActivity {
         }else {
             getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
         }
+    }
+
+    public void fromEditorToCamera(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).show(fragmentCamera).commit();
+        checkPermission();
     }
 
 
@@ -344,7 +352,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void fromImageEditorToSelectFriends(){
+    public void fromImageEditorToSelectFriends(String imageFilePath, String timer){
+        // file path to be sent to friends
+        fragmentFriendSelection.imageFilePath = imageFilePath;
+        fragmentFriendSelection.imageTimer = timer;
+
         getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).commit();
         if (!fragmentFriendSelection.isAdded()){
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentFriendSelection).commit();
@@ -481,8 +493,21 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().hide(fragmentFriendSelection).show(fragmentMain).commit();
     }
 
-    public void fromChatScreenToShowImage(){
+    public void fromChatScreenToShowImage(int messageTimer, String imageUrl, int messageIdx){
+        fragmentShowImageTimer.messageTimer = messageTimer;
+        fragmentShowImageTimer.imageUrl = imageUrl;
+        fragmentShowImageTimer.messageIdx = messageIdx;
 
+        getSupportFragmentManager().beginTransaction().hide(fragmentChat).commit();
+        getSupportFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
+    }
+
+    public void fromShowImageToChatScreen(){
+        // update status of image that has been displayed
+        fragmentChat.updateDisplayedImageStatus(fragmentShowImageTimer.messageIdx);
+
+        getSupportFragmentManager().beginTransaction().hide(fragmentShowImageTimer).commit();
+        getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
     }
 
     @Override
@@ -495,6 +520,34 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause(){
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // load message to database ??
+        Intent intent = getIntent();
+
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            String chatMessage = (String) extras.get("chat_message");
+            String chatMessageType = (String) extras.get("chat_message_type");
+            String chatMessageTimer = (String) extras.get("chat_message_timer");
+            int messageTimer = Integer.parseInt(chatMessageTimer);
+
+            if (chatMessageType.equals(ChatMessageModel.MSG_DATA_TEXT)) {
+                // receive regular text
+                fragmentChat.addMessageListItems(chatMessage, false, ChatMessageModel.MSG_TYPE_OTHER_TEXT, messageTimer);
+            } else if (messageTimer != 0) {
+                // receive a snap (image with timer)
+                fragmentChat.addMessageListItems(chatMessage, true, ChatMessageModel.MSG_TYPE_OTHER_IMG_TIMER_VIEW, messageTimer);
+            } else {
+                // receive static image without timer
+                fragmentChat.addMessageListItems(chatMessage, true, ChatMessageModel.MSG_TYPE_OTHER_IMG, messageTimer);
+            }
+        }
+
     }
 
 }

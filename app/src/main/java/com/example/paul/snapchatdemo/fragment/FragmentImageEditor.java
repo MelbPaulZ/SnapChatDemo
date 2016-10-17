@@ -1,6 +1,5 @@
 package com.example.paul.snapchatdemo.fragment;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,19 +21,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.imageeditor.CanvasView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -70,6 +80,7 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(out);
     }
 
+    // still use default for testing
     public String imageCanvasBackgroundPath = "/storage/emulated/0/WhatsApp/Media/WallPaper/Dandenong.jpg";
 
     /**
@@ -97,9 +108,10 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
     ImageButton addToStoryButton;
     ImageButton sendToFriendsButton;
 
-    // set image timer
-//    TextView timerText;
-    // Spinner element
+    ProgressBar loadingPanel;
+
+    // timer
+    TextView timerText;
     Spinner timerSpinner;
 
     // temporary to track user's touch movement
@@ -109,19 +121,32 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
     // to scale image icons
     float scale;
 
+    private StorageReference mStorageRef;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-//        timerText = (TextView) root.findViewById(R.id.timerText);
-//        timerSpinner = (Spinner) root.findViewById(R.id.timerSpinner);
-//        String [] values = {"1","2","3","4","5","6","7","8","9","10"};
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
-//        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-//        timerSpinner.setAdapter(adapter);
-//        int spinnerPosition = adapter.getPosition("3");
-//        timerSpinner.setSelection(spinnerPosition);
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        loadingPanel = (ProgressBar)root.findViewById(R.id.loadingPanel);
+
+        // construct timer & spinner
+        timerText = (TextView) root.findViewById(R.id.timerText);
+        timerSpinner = (Spinner) root.findViewById(R.id.timerSpinner);
+        final String [] values = {"1","2","3","4","5","6","7","8","9","10"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item, values);
+        timerSpinner.setAdapter(adapter);
+        timerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                timerText.setText(values[position]);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // calculate screen scale
         scale = getResources().getDisplayMetrics().density;
 
         // init the root layout
@@ -452,33 +477,42 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         imm.hideSoftInputFromWindow(imageInputText.getWindowToken(), 0);
     }
 
+    private String createdFileName = "";
+
+    private void executeSaveImage() {
+
+        // draw components to canvas
+        CanvasView content = (CanvasView)root.findViewById(R.id.imageCanvas);
+        content.setDrawingCacheEnabled(true);
+        Bitmap bitmap = content.getDrawingCache();
+        bitmap = drawComponentsToCanvas(bitmap);
+
+        // write to file
+        String fileName = "/storage/emulated/0/Snapchat/"+UUID.randomUUID().toString()+".png";
+        File file = new File(fileName);
+        try
+        {
+            file.createNewFile();
+            FileOutputStream ostream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+            ostream.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        // refresh the gallery folder
+        createdFileName = fileName;
+        scanFile(fileName);
+
+    }
+
     private View.OnClickListener saveImage() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // draw components to canvas
-                CanvasView content = (CanvasView)root.findViewById(R.id.imageCanvas);
-                content.setDrawingCacheEnabled(true);
-                Bitmap bitmap = content.getDrawingCache();
-                bitmap = drawComponentsToCanvas(bitmap);
-
-                // write to file
-                String fileName = "/storage/emulated/0/Snapchat/"+UUID.randomUUID().toString()+".png";
-                File file = new File(fileName);
-                try
-                {
-                    file.createNewFile();
-                    FileOutputStream ostream = new FileOutputStream(file);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
-                    ostream.close();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-
-                // refresh the gallery folder
-                scanFile(fileName);
+                executeSaveImage();
             }
         };
     }
@@ -519,8 +553,11 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         int text_loc_y = text_loc[1];
         imageInputText.setCursorVisible(false);
         imageInputText.buildDrawingCache();
-        Bitmap imageInputTextBitmap = Bitmap.createBitmap(imageInputText.getDrawingCache());
-        canvas.drawBitmap(imageInputTextBitmap, text_loc_x, text_loc_y, paint);
+        Bitmap imageInputTextDrawingCacheBitmap = imageInputText.getDrawingCache();
+        if (imageInputTextDrawingCacheBitmap!=null) {
+            Bitmap imageInputTextBitmap = Bitmap.createBitmap(imageInputTextDrawingCacheBitmap);
+            canvas.drawBitmap(imageInputTextBitmap, text_loc_x, text_loc_y, paint);
+        }
 
         // draw icons to canvas
         int imageIconSize = (int)(60 * scale);
@@ -546,7 +583,7 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: redirect to camera screen. ask paul
+                ((MainActivity)getActivity()).fromEditorToCamera();
             }
         };
     }
@@ -556,8 +593,8 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: use spinner
-//                timerText.setText("11");
+                timerSpinner.setVisibility(View.VISIBLE);
+                timerSpinner.performClick();
             }
         };
     }
@@ -566,7 +603,46 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: redirect to story fragment ? ask anita
+
+                String pathPrefix = "file://";
+
+                if (createdFileName.isEmpty()) {
+                    // user directly sharing image without click save button.
+                    executeSaveImage();
+                }
+
+                // upload image to firebase
+                final String localImageFileName = pathPrefix+createdFileName;
+                String fileName = UUID.randomUUID().toString();
+
+                final StorageReference serverPhotoRef = mStorageRef.child("photos").child(fileName);
+                Uri fileUri = Uri.parse(localImageFileName);
+                serverPhotoRef.putFile(fileUri)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Uri downloadURL = taskSnapshot.getMetadata().getDownloadUrl();
+                                loadingPanel.setVisibility(View.GONE);
+                                // implement redirect to story, what data to be set ?
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // upload image failed
+                                loadingPanel.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Upload to story is failed, check your network connection.", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                loadingPanel.bringToFront();
+                                loadingPanel.setVisibility(View.VISIBLE);
+                            }
+                        });
+
             }
         };
     }
@@ -575,8 +651,12 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: redirect to pick friends. ask paul
-                ((MainActivity)getActivity()).fromImageEditorToSelectFriends();
+                if (createdFileName.isEmpty()) {
+                    // user directly sharing image without click save button.
+                    executeSaveImage();
+                }
+
+                ((MainActivity)getActivity()).fromImageEditorToSelectFriends(createdFileName, timerText.getText().toString());
             }
         };
     }
