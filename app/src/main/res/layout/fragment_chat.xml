@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:background="@drawable/shape_bottom_line">
 
         <ImageButton
@@ -19,6 +20,14 @@
             android:scaleType="fitXY"
             android:background="@null"
             android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/friendNameTextView"
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
     </LinearLayout>
 
     <RelativeLayout

@@ -1,27 +1,27 @@
 package com.example.paul.snapchatdemo.bean;
 
 public class PushMessage {
-    private String senderUserId;
-    private String totalMessage;
+//    private String senderUserId;
+//    private String totalMessage;
     private String chatMessage;
     private String chatMessageType;
     private String chatMessageTimer;
 
-    public String getSenderUserId() {
-        return senderUserId;
-    }
-
-    public void setSenderUserId(String senderUserId) {
-        this.senderUserId = senderUserId;
-    }
-
-    public String getTotalMessage() {
-        return totalMessage;
-    }
-
-    public void setTotalMessage(String totalMessage) {
-        this.totalMessage = totalMessage;
-    }
+//    public String getSenderUserId() {
+//        return senderUserId;
+//    }
+//
+//    public void setSenderUserId(String senderUserId) {
+//        this.senderUserId = senderUserId;
+//    }
+//
+//    public String getTotalMessage() {
+//        return totalMessage;
+//    }
+//
+//    public void setTotalMessage(String totalMessage) {
+//        this.totalMessage = totalMessage;
+//    }
 
     public String getChatMessage() {
         return chatMessage;
