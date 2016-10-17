@@ -61,21 +61,6 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     LayoutInflater inflater;
     Bundle savedInstanceState;
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.inflater = inflater;
-        root= inflater.inflate(R.layout.fragment_chat, container, false);
-        this.savedInstanceState = savedInstanceState;
-        return root;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
     public static List<ChatMessageModel>  chatMessageList;
     public static ChatMessageAdapter chatMessageAdapter;
 
@@ -98,6 +83,24 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
     private TextView friendNameTextView;
 
+    private String name;
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        this.inflater = inflater;
+        root= inflater.inflate(R.layout.fragment_chat, container, false);
+        this.savedInstanceState = savedInstanceState;
+        return root;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+
+
     @Override
     public void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
@@ -108,6 +111,9 @@ public class FragmentChat extends android.support.v4.app.Fragment {
         super.onActivityCreated(savedInstanceState);
 
         friendNameTextView = (TextView)root.findViewById(R.id.friendNameTextView);
+        if (name!=null) {
+            friendNameTextView.setText(name);
+        }
 
         backToContactButton = (ImageButton)root.findViewById(R.id.backToContactButton);
         backToContactButton.setOnClickListener(new View.OnClickListener() {
@@ -408,7 +414,10 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
     public void setFriend(String userId, String name){
         receiverUserId = userId;
-        friendNameTextView.setText(name);
+        this.name = name;
+        if (friendNameTextView!=null) {
+            friendNameTextView.setText(name);
+        }
     }
 
     public boolean isChattingWithUser(String userId) {

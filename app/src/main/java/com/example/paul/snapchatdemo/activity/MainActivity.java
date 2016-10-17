@@ -559,14 +559,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void contactToChatScreen(Friend friend){
-        fragmentChat.setFriend(friend.getId(), friend.getName());
-
         getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
         if (!fragmentChat.isAdded()){
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+        }else {
+            getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
         }
+        fragmentChat.setFriend(friend.getId(), friend.getName());
 
-        getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
     }
 
     public void chatScreenToContact(){
