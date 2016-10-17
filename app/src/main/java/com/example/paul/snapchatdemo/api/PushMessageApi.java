@@ -16,6 +16,10 @@ public interface PushMessageApi {
                                   @Query("chat_message_type") String chatMessageType,
                                   @Query("chat_message_timer") String chatMessageTimer);
 
+    @PUT("delete_message_by_sender_id.php?")
+    Call<PushMessage> deleteMessage(@Query("user_id") String userId,
+                                  @Query("sender_user_id") String senderUserId);
+
     @PUT("get_message_by_sender_id.php?")
     Call<ArrayList<PushMessage>> getMessageBySenderId(@Query("user_id") String userId,
                                   @Query("sender_user_id") String senderUserId);

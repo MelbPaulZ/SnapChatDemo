@@ -44,6 +44,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("sender_user_id", senderUserId);
+            intent.putExtra("sender", sender);
             intent.putExtra("chat_message", message);
             intent.putExtra("chat_message_type",messageType);
             intent.putExtra("chat_message_timer", messageTimer);

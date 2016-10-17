@@ -76,8 +76,7 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
     private StorageReference mStorageRef;
 
-    private String senderUserId;
-    private String receiverUserId;
+    public String receiverUserId;
 
     private ImageButton backToContactButton;
 
@@ -122,8 +121,6 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                 backToContactList();
             }
         });
-        
-        senderUserId = ((MainActivity)getActivity()).getUserId();
 
         loadingPanel = (ProgressBar) root.findViewById(R.id.loadingPanel);
 
@@ -197,21 +194,20 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
                             // send message to server
                             ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);
-                            chatApi.sendMessage(senderUserId, receiverUserId, inputMessage, messageType,"0").enqueue(new Callback<User>() {
+                            chatApi.sendMessage(UserUtil.getId(), receiverUserId, inputMessage, messageType,"0").enqueue(new Callback<User>() {
                                 @Override
                                 public void onResponse(Call<User> call, Response<User> response) {
                                     // send message is successful
                                     // add message to message list
                                     messageText.setText(null);
-                                    addMessageListItems(inputMessage, false, 1, messageTimer);
+                                    addMessageListItems(inputMessage, false, ChatMessageModel.MSG_TYPE_MINE_TEXT_SENT, messageTimer);
                                 }
 
                                 @Override
                                 public void onFailure(Call<User> call, Throwable t) {
                                     // send message is failed
-                                    // TODO: implement retry
                                     messageText.setText(null);
-                                    addMessageListItems(inputMessage, false, 2, messageTimer);
+                                    addMessageListItems(inputMessage, false, ChatMessageModel.MSG_TYPE_MINE_TEXT_PENDING, messageTimer);
                                 }
                             });
                         }
@@ -225,6 +221,21 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     }
 
     private void backToContactList() {
+
+        // remove message from queue
+        PushMessageApi pushMessageApi = HttpUtil.accessServer(PushMessageApi.class);
+        pushMessageApi.deleteMessage(UserUtil.getId(), receiverUserId).enqueue(new Callback<PushMessage>() {
+            @Override
+            public void onResponse(Call<PushMessage> call, Response<PushMessage> response) {
+                // do nothing
+            }
+
+            @Override
+            public void onFailure(Call<PushMessage> call, Throwable t) {
+                // do nothing
+            }
+        });
+
         // reset receiver id
         receiverUserId = "-1";
 
@@ -312,20 +323,20 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
                             // send message to server
                             ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);
-                            chatApi.sendMessage(senderUserId, receiverUserId, downloadURL.toString(), messageType, messageTimer).enqueue(new Callback<User>() {
+                            chatApi.sendMessage(UserUtil.getId(), receiverUserId, downloadURL.toString(), messageType, messageTimer).enqueue(new Callback<User>() {
                                 @Override
                                 public void onResponse(Call<User> call, Response<User> response) {
                                     // send message is successful
                                     // upload image to sender chat screen
                                     loadingPanel.setVisibility(View.GONE);
-                                    addMessageListItems(localImageFileName, true, 3, 0);
+                                    addMessageListItems(localImageFileName, true, ChatMessageModel.MSG_TYPE_MINE_IMG_SENT, 0);
                                 }
 
                                 @Override
                                 public void onFailure(Call<User> call, Throwable t) {
                                     // send message to receiver is failed, ask user to retry
                                     loadingPanel.setVisibility(View.GONE);
-                                    addMessageListItems(localImageFileName, true, 4, 0);
+                                    addMessageListItems(localImageFileName, true, ChatMessageModel.MSG_TYPE_MINE_IMG_PENDING, 0);
                                 }
                             });
 
@@ -336,7 +347,7 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                         public void onFailure(@NonNull Exception exception) {
                             // upload image failed, ask user to retry
                             loadingPanel.setVisibility(View.GONE);
-                            addMessageListItems(localImageFileName, true, 4, 0);
+                            addMessageListItems(localImageFileName, true, ChatMessageModel.MSG_TYPE_MINE_IMG_PENDING, 0);
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -390,7 +401,7 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
     public void pullMessageFromQueue() {
         final PushMessageApi pushMessageApi = HttpUtil.accessServerWithGson(PushMessageApi.class);
-        pushMessageApi.getMessageBySenderId(UserUtil.getId(), senderUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
+        pushMessageApi.getMessageBySenderId(UserUtil.getId(), receiverUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
             @Override
             public void onResponse(Call<ArrayList<PushMessage>> call, Response<ArrayList<PushMessage>> response) {
                 List<PushMessage> messageList = response.body();
@@ -398,6 +409,9 @@ public class FragmentChat extends android.support.v4.app.Fragment {
                     int timer = Integer.parseInt(msg.getChatMessageTimer());
                     putMessageToChatScreen(msg.getChatMessage(), msg.getChatMessageType(), timer);
                 }
+
+                // remove all message from queue
+
             }
 
             @Override
@@ -409,8 +423,6 @@ public class FragmentChat extends android.support.v4.app.Fragment {
             }
         });
     }
-
-
 
     public void setFriend(String userId, String name){
         receiverUserId = userId;

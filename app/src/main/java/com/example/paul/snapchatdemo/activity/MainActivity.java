@@ -41,6 +41,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentShowImageTimer;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
 import com.example.paul.snapchatdemo.utils.UserUtil;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 
@@ -180,6 +181,9 @@ public class MainActivity extends AppCompatActivity {
                 receiveChatMessage(intent);
             }
         };
+
+        // set timeout for firebase upload to 10 seconds
+        FirebaseStorage.getInstance().setMaxUploadRetryTimeMillis(10000);
 
         // this is for chat screen
         isAppCreated = true;
@@ -566,12 +570,20 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
         }
         fragmentChat.setFriend(friend.getId(), friend.getName());
+        fragmentChat.pullMessageFromQueue();
 
     }
 
     public void chatScreenToContact(){
         getSupportFragmentManager().beginTransaction().hide(fragmentChat).commit();
-        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom).show(fragmentMain).commit();
+
+        if (fragmentMain.isAdded()){
+            if (fragmentMain.isHidden()){
+                getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom).show(fragmentMain).commit();
+            }
+        }else{
+            getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom).add(R.id.main_frame, fragmentMain).commit();
+        }
     }
 
     @Override
@@ -648,13 +660,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initToChatScreen(String senderUserId, String sender) {
-        fragmentChat.setFriend(senderUserId, sender);
         getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
         if (!fragmentChat.isAdded()){
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
         }
-        fragmentChat.pullMessageFromQueue();
         getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
+
+        fragmentChat.setFriend(senderUserId, sender);
+        fragmentChat.pullMessageFromQueue();
     }
 
     @Override
