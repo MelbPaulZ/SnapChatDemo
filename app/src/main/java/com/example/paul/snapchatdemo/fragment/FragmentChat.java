@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
@@ -434,5 +435,35 @@ public class FragmentChat extends android.support.v4.app.Fragment {
 
     public boolean isChattingWithUser(String userId) {
         return receiverUserId.equals(userId);
+    }
+
+    public void retrySendingMessage(final ChatMessageModel chm) {
+        ChatApi chatApi = HttpUtil.accessServer(ChatApi.class);
+        chatApi.sendMessage(UserUtil.getId(), receiverUserId, chm.getImageUrl(), ""+chm.getMessageType(), ""+chm.getMessageTimer()).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                // update this message into successful
+                int oldMessageType = chm.getMessageType();
+                if (oldMessageType==ChatMessageModel.MSG_TYPE_MINE_TEXT_PENDING) {
+                    chm.setMessageType(ChatMessageModel.MSG_TYPE_MINE_TEXT_SENT);
+                }
+                else if (oldMessageType==ChatMessageModel.MSG_TYPE_MINE_IMG_PENDING) {
+                    chm.setMessageType(ChatMessageModel.MSG_TYPE_MINE_IMG_SENT);
+                }
+
+                int messageIdx = chm.getMessageIdx();
+                chatMessageList.remove(messageIdx);
+                chatMessageList.add(messageIdx, chm);
+                chatMessageAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                // show toast
+                Toast.makeText(getContext(), "Retry sending message failed, check your network connection.", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 }

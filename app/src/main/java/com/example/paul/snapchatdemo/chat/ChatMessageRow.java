@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
+import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -146,12 +147,24 @@ public class ChatMessageRow {
             chatDescText.setText("tap to retry ");
             chatDescSentImage.setVisibility(View.GONE);
             chatDescRetryImage.setVisibility(View.VISIBLE);
+
+            chatRootContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    retrySendMessage(chatMessageModel);
+                }
+            });
         }
         else {
             chatDescText.setText(" ");
             chatDescSentImage.setVisibility(View.GONE);
             chatDescRetryImage.setVisibility(View.GONE);
         }
+    }
+
+    private void retrySendMessage(ChatMessageModel chatMessageModel) {
+        FragmentChat fc = ((MainActivity)(Activity) context).getFragmentChat();
+        fc.retrySendingMessage(chatMessageModel);
     }
 
     private void showImage(ChatMessageModel chm) {

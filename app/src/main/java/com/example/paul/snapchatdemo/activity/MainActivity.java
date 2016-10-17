@@ -670,6 +670,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentChat.pullMessageFromQueue();
     }
 
+    public FragmentChat getFragmentChat() {
+        return fragmentChat;
+    }
+
     @Override
     public void onBackPressed()
     {
