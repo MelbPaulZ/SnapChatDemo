@@ -42,11 +42,23 @@ public class LoginPresenter {
         // get remote service
         UserApi userApi = HttpUtil.accessServer(UserApi.class);
 
+
         // this is for getting data back, asynchronous doing this task
         userApi.login(userName, passWord, C.methods.METHOD_LOGIN).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                User loginUser = response.body();
+
+
+                final User loginUser = response.body();
+                Thread thread = new Thread(){
+                    @Override
+                    public void run() {
+                        String token = Token.generateToken();
+                        Token.registerToken(token, loginUser.getId());
+                    }
+                };
+                thread.start();
+
                 loginUser.toString();
                 storyUserInfo(loginUser.getUserName(), loginUser.getId(), loginUser.getToken());
                 FriendManager.getInstance().setFriendList(loginUser.getFriends());
@@ -66,6 +78,7 @@ public class LoginPresenter {
         userApi.register(Token.generateToken(), username, password).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+
                 Toast.makeText(context, "Registration successful, please login", Toast.LENGTH_SHORT).show();
             }
 

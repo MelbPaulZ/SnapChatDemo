@@ -5,6 +5,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
+    <ProgressBar
+        android:id="@+id/loadingPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
     <ImageView
         android:id="@+id/timerImageView"
         android:layout_width="fill_parent"
@@ -21,6 +29,7 @@
         android:background="@drawable/rounded_corner"
         android:textColor="#ffffff"
         android:gravity="center"
+        android:visibility="gone"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

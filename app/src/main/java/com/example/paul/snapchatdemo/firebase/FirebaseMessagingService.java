@@ -23,17 +23,19 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         showNotification(remoteMessage.getData().get("sender"),
                 remoteMessage.getData().get("chat_message"),
-                remoteMessage.getData().get("chat_message_type"));
+                remoteMessage.getData().get("chat_message_type"),
+                remoteMessage.getData().get("chat_message_timer"));
     }
 
     //  show a notification for received message
-    private void showNotification(String sender, String message, String messageType){
+    private void showNotification(String sender, String message, String messageType, String messageTimer){
         if (!MainActivity.isAppCreated) {
-            // to be broad
+            // to be broadcasted
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("message", message);
-            intent.putExtra("message_type",messageType);
+            intent.putExtra("chat_message", message);
+            intent.putExtra("chat_message_type",messageType);
+            intent.putExtra("chat_message_timer",messageTimer);
             PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_CANCEL_CURRENT);
 
             Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -46,15 +48,19 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                     .setContentIntent(pendingIntent);
             NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(0, noBuilder.build());
+
+            // put message into database
+
         }
+        else {
+            Intent intentRece = new Intent(REGISTRATION_SUCCESS);
+            intentRece.putExtra("chat_message", message);
+            intentRece.putExtra("chat_message_type",messageType);
+            intentRece.putExtra("chat_message_timer",messageTimer);
 
-        Intent intentRece = new Intent(REGISTRATION_SUCCESS);
-        intentRece.putExtra("message", message);
-        intentRece.putExtra("message_type",messageType);
-
-        // broadcast the message to any receiver
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intentRece);
-
+            // broadcast the message to any receiver
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intentRece);
+        }
     }
 
 }

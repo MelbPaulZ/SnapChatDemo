@@ -156,6 +156,8 @@ public class FragmentContactList extends Fragment implements SearchView.OnQueryT
 
     @Override
     public void movePrevious() {
+        ViewPager viewPager = ((MainActivity)getActivity()).getFragmentMain().getViewPager();
+        viewPager.setCurrentItem(viewPager.getCurrentItem()-1);
         // do nothing, it is the most left one
     }
 

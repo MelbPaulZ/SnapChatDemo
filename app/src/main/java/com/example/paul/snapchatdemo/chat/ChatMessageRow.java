@@ -49,7 +49,7 @@ public class ChatMessageRow {
         this.bubbleSpacerWidth = bubbleSpacerWidth;
     }
 
-    public void bind(ChatMessageModel chatMessageModel) {
+    public void bind(final ChatMessageModel chatMessageModel) {
         chatRootContent.getLayoutParams().width = bubbleWidth;
         bubbleSpacer.getLayoutParams().width = bubbleSpacerWidth;
 
@@ -81,34 +81,51 @@ public class ChatMessageRow {
         else {
             bubbleSpacer.setVisibility(View.GONE);
 
-            Picasso.with(context).load("none").into(imageView);
-
             String text="";
             if (messageType==ChatMessageModel.MSG_TYPE_OTHER_TEXT) {
+                Picasso.with(context).load("none").into(imageView);
+
                 text = chatMessageModel.getText();
                 textView.setTextColor(Color.parseColor("#000000"));
                 textView.setTypeface(null, Typeface.NORMAL);
             }
-            else if (messageType==ChatMessageModel.MSG_TYPE_OTHER_IMG_VIEW) {
-                text = "Tap to view";
-                textView.setTextColor(Color.parseColor("#1E90FF"));
-                textView.setTypeface(null, Typeface.BOLD);
+            else if (messageType==ChatMessageModel.MSG_TYPE_OTHER_IMG) {
+                String imageUrl = chatMessageModel.getImageUrl();
+                Picasso.with(context).load(imageUrl).resize(imageWidth, imageHeight).centerInside().into(imageView);
             }
             else {
-                text = "Tap to replay";
-                textView.setTextColor(Color.parseColor("#1E90FF"));
-                textView.setTypeface(null, Typeface.BOLD);
+                if (chatMessageModel.getViewQuota()==2) {
+                    Picasso.with(context).load("none").into(imageView);
+
+                    text = "Tap to view image";
+                    textView.setTextColor(Color.parseColor("#1E90FF"));
+                    textView.setTypeface(null, Typeface.BOLD);
+                }
+                else if (chatMessageModel.getViewQuota()==1){
+                    Picasso.with(context).load("none").into(imageView);
+
+                    text = "Tap to replay image";
+                    textView.setTextColor(Color.parseColor("#51188e"));
+                    textView.setTypeface(null, Typeface.BOLD);
+                }
+                else {
+                    Picasso.with(context).load("none").into(imageView);
+
+                    text = "Image has been replayed";
+                    textView.setTextColor(Color.parseColor("#fc0000"));
+                    textView.setTypeface(null, Typeface.BOLD);
+                }
             }
             textView.setText(text);
             textView.bringToFront();
 
             // add click listener on the chat bubble for image type
-            if (messageType==ChatMessageModel.MSG_TYPE_OTHER_IMG_VIEW
-                    || messageType==ChatMessageModel.MSG_TYPE_OTHER_IMG_REPLAY) {
+            if (messageType==ChatMessageModel.MSG_TYPE_OTHER_IMG_TIMER_VIEW
+                    || messageType==ChatMessageModel.MSG_TYPE_OTHER_IMG_TIMER_REPLAY) {
                 chatRootContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showImage();
+                        showImage(chatMessageModel);
                     }
                 });
             }
@@ -137,8 +154,11 @@ public class ChatMessageRow {
         }
     }
 
-    private void showImage() {
-        // redirect to FragmentShowImageTimer
-        ((MainActivity)(Activity) context).fromChatScreenToShowImage();
+    private void showImage(ChatMessageModel chm) {
+        // only show image if its still have view quota
+        if (chm.getViewQuota()!=0) {
+            // redirect to FragmentShowImageTimer
+            ((MainActivity)(Activity) context).fromChatScreenToShowImage(chm.getMessageTimer(), chm.getImageUrl(), chm.getMessageIdx());
+        }
     }
 }
