@@ -257,6 +257,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void fromImageEditorToCreateStory(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).commit();
+        if (fragmentCreatestory.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentCreatestory).commit();
+        }else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentCreatestory).commit();
+        }
+    }
+
     public void fromCameraToEditor(String path){
 
         fragmentImageEditor.imageCanvasBackgroundPath = path;
@@ -267,6 +276,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
         }
     }
+
+
 
     public void fromEditorToCamera(){
         getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).show(fragmentCamera).commit();

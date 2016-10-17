@@ -622,8 +622,13 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 Uri downloadURL = taskSnapshot.getMetadata().getDownloadUrl();
+                                String downloadUrl=downloadURL.toString();
+                                System.out.println("ImageEditor downloadUrl:"+downloadUrl);
+                                ((MainActivity)getActivity()).setImageUrl(downloadUrl);
+                                ((MainActivity)getActivity()).fromImageEditorToCreateStory();
                                 loadingPanel.setVisibility(View.GONE);
                                 // implement redirect to story, what data to be set ?
+
 
                             }
                         })
