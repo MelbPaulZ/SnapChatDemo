@@ -5,7 +5,10 @@ package com.example.paul.snapchatdemo.utils;
  */
 public class UserUtil {
     private static String username;
-    private static String id;
+
+    // should have been kept this userId on local cache db, so we could push message to queue on server when app is not active
+    private static String id = "4";
+
     private static String token;
 
     public static String getUsername() {

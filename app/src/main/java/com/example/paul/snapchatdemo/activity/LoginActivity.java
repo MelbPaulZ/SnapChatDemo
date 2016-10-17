@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.chat.Token;
 import com.example.paul.snapchatdemo.presenter.LoginPresenter;
+import com.example.paul.snapchatdemo.utils.UserUtil;
 
 /**
  * Created by Paul on 20/09/2016.
@@ -68,8 +69,7 @@ public class LoginActivity  extends AppCompatActivity{
 
     private void registerToken() {
         String token = Token.generateToken();
-//        Token.registerToken(token, UserUtil.getId());
-        Token.registerToken(token, "4");
+        Token.registerToken(token, UserUtil.getId());
     }
 
     public void loginSuccessful(){

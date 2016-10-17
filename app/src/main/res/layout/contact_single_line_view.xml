@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact_box"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="@dimen/single_line_height">
     <TextView
         android:id="@+id/name_tv"
