@@ -653,7 +653,6 @@ public class MainActivity extends AppCompatActivity {
         if (extras != null) {
             String senderUserId = (String) extras.get("sender_user_id");
             String sender = (String) extras.get("sender");
-
             // redirect to chat screen
             initToChatScreen(senderUserId, sender);
         }

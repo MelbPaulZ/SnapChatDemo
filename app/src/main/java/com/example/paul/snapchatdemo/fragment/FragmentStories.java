@@ -80,37 +80,39 @@ public class FragmentStories extends Fragment implements SearchView.OnQueryTextL
 
 
     public void initRecommendTopics(){
-        ImageView imageView1 = (ImageView) root.findViewById(R.id.stories_image1);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(0).getUrl()).into(imageView1);
-        imageView1.setOnClickListener(this);
+        if (UrlManager.getInstance().getUrls()!=null && UrlManager.getInstance().getUrls().size()!=0) {
+            ImageView imageView1 = (ImageView) root.findViewById(R.id.stories_image1);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(0).getUrl()).into(imageView1);
+            imageView1.setOnClickListener(this);
 
-        ImageView imageView2 = (ImageView) root.findViewById(R.id.stories_image2);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(1).getUrl()).into(imageView2);
-        imageView2.setOnClickListener(this);
+            ImageView imageView2 = (ImageView) root.findViewById(R.id.stories_image2);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(1).getUrl()).into(imageView2);
+            imageView2.setOnClickListener(this);
 
-        ImageView imageView3 = (ImageView) root.findViewById(R.id.stories_image3);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(2).getUrl()).into(imageView3);
-        imageView3.setOnClickListener(this);
+            ImageView imageView3 = (ImageView) root.findViewById(R.id.stories_image3);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(2).getUrl()).into(imageView3);
+            imageView3.setOnClickListener(this);
 
-        ImageView imageView4 = (ImageView) root.findViewById(R.id.stories_image4);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(3).getUrl()).into(imageView4);
-        imageView4.setOnClickListener(this);
+            ImageView imageView4 = (ImageView) root.findViewById(R.id.stories_image4);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(3).getUrl()).into(imageView4);
+            imageView4.setOnClickListener(this);
 
-        ImageView imageView5 = (ImageView) root.findViewById(R.id.stories_image5);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(4).getUrl()).into(imageView5);
-        imageView5.setOnClickListener(this);
+            ImageView imageView5 = (ImageView) root.findViewById(R.id.stories_image5);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(4).getUrl()).into(imageView5);
+            imageView5.setOnClickListener(this);
 
-        ImageView imageView6 = (ImageView) root.findViewById(R.id.stories_image6);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(5).getUrl()).into(imageView6);
-        imageView6.setOnClickListener(this);
+            ImageView imageView6 = (ImageView) root.findViewById(R.id.stories_image6);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(5).getUrl()).into(imageView6);
+            imageView6.setOnClickListener(this);
 
-        ImageView imageView7 = (ImageView) root.findViewById(R.id.stories_image7);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
-        imageView7.setOnClickListener(this);
+            ImageView imageView7 = (ImageView) root.findViewById(R.id.stories_image7);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(6).getUrl()).into(imageView7);
+            imageView7.setOnClickListener(this);
 
-        ImageView imageView8 = (ImageView) root.findViewById(R.id.stories_image8);
-        Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
-        imageView8.setOnClickListener(this);
+            ImageView imageView8 = (ImageView) root.findViewById(R.id.stories_image8);
+            Picasso.with(getContext()).load(UrlManager.getInstance().getUrls().get(7).getUrl()).into(imageView8);
+            imageView8.setOnClickListener(this);
+        }
     }
 
     public void initFriendStoriesListView() {
