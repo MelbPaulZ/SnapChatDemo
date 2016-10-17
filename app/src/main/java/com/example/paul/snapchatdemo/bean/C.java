@@ -21,6 +21,8 @@ public class C {
         public final static String METHOD_ADDEDME="addedme";
         public final static String METHOD_ADDEDMEAGREE="addedmeagree";
         public final static String METHOD_CREATESTORY="createstory";
+        public final static String METHOD_LOCKPHOTO="lockphoto";
+        public final static String METHOD_LOCKALBUM="lockalbum";
 
     }
 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+<android.support.v7.widget.Toolbar
+    android:layout_width="match_parent"
+    android:layout_height="50dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="back"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/lockphotoBtBack"/>
+    </RelativeLayout>
+</android.support.v7.widget.Toolbar>
+
+<RelativeLayout  android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:id="@+id/button_lock_photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lock Photo Now" />
+        <EditText
+            android:id="@+id/password_secret"
+            android:textSize="20sp"
+            android:hint="Enter the password for the secret album"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/button_lock_album"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Secret Album" />
+    </LinearLayout>
+
+</RelativeLayout>
+</LinearLayout>

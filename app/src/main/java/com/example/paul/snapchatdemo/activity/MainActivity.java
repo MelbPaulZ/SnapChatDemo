@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
+import com.example.paul.snapchatdemo.bean.PhotoStory;
 import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.firebase.FirebaseMessagingService;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
@@ -29,10 +30,12 @@ import com.example.paul.snapchatdemo.fragment.FragmentChat;
 import com.example.paul.snapchatdemo.fragment.FragmentCreatestory;
 import com.example.paul.snapchatdemo.fragment.FragmentFriendSelection;
 import com.example.paul.snapchatdemo.fragment.FragmentImageEditor;
+import com.example.paul.snapchatdemo.fragment.FragmentLockphoto;
 import com.example.paul.snapchatdemo.fragment.FragmentMain;
 import com.example.paul.snapchatdemo.fragment.FragmentMemories;
 import com.example.paul.snapchatdemo.fragment.FragmentResultAddedme;
 import com.example.paul.snapchatdemo.fragment.FragmentResultFriend;
+import com.example.paul.snapchatdemo.fragment.FragmentSecretalbum;
 import com.example.paul.snapchatdemo.fragment.FragmentShowImageTimer;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentAddfriends fragmentAddfriends;
     private FragmentAddaddressbook fragmentAddaddressbook;
     private FragmentAddusername fragmentAddusername;
+    private FragmentLockphoto fragmentLockPhoto;
+    private FragmentSecretalbum fragmentSecretalbum;
     private FragmentChat fragmentChat;
     private FragmentShowImageTimer fragmentShowImageTimer;
 
@@ -66,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
     private String friend_username;
     private String friend_userid;
     private ArrayList<FriendPhone> friendPhoneList;
+
+    public ArrayList<PhotoStory> getPhotoStory() {
+        return photoStory;
+    }
+
+    public void setPhotoStory(ArrayList<PhotoStory> photoStory) {
+        this.photoStory = (ArrayList<PhotoStory>)photoStory.clone();
+    }
+
+    private ArrayList<PhotoStory> photoStory;
     private String imageUrl;
 
     public String getAbsolutePath() {
@@ -209,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentCreatestory  = new FragmentCreatestory();
         fragmentFriendSelection = new FragmentFriendSelection();
         fragmentShowImageTimer = new FragmentShowImageTimer();
+        fragmentLockPhoto = new FragmentLockphoto();
+        fragmentSecretalbum = new FragmentSecretalbum();
     }
 
     public FragmentMain getFragmentMain(){
@@ -315,23 +332,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void addFriendsToAddAddress(){
-        getSupportFragmentManager().beginTransaction().hide(fragmentAddfriends).commit();
-        if (fragmentAddaddressbook.isAdded()){
-            getSupportFragmentManager().beginTransaction().show(fragmentAddaddressbook).commit();
-        }else{
-            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentAddaddressbook).commit();
-        }
-    }
 
-    public void addFriendsToAddUsername(){
-        getSupportFragmentManager().beginTransaction().hide(fragmentAddfriends).commit();
-        if (fragmentAddusername.isAdded()){
-            getSupportFragmentManager().beginTransaction().show(fragmentAddusername).commit();
-        }else{
-            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentAddusername).commit();
-        }
-    }
 
     public void fromAddfriendsToAddusername(){
         getSupportFragmentManager().beginTransaction().hide(fragmentAddfriends).commit();
@@ -507,6 +508,46 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentMain).commit();
+        }
+    }
+
+    public void fromMemoryToLockphoto(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
+        if(fragmentLockPhoto.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentLockPhoto).commit();
+        }
+        else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentLockPhoto).commit();
+        }
+    }
+
+    public void fromLockphotoToMemory(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentLockPhoto).commit();
+        if(fragmentMain.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentMain).commit();
+        }
+        else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentMain).commit();
+        }
+    }
+
+    public void fromSecretalbumToLockphoto(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentSecretalbum).commit();
+        if(fragmentLockPhoto.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentLockPhoto).commit();
+        }
+        else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentLockPhoto).commit();
+        }
+    }
+
+    public void fromLockPhotoToSecretAlbum(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentLockPhoto).commit();
+        if(fragmentSecretalbum.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentSecretalbum).commit();
+        }
+        else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentSecretalbum).commit();
         }
     }
 
