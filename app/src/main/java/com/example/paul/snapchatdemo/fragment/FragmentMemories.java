@@ -73,6 +73,7 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
     private ImageButton deleteFromAlbum;
     private ImageButton socialSharePhoto;
     private ImageButton createstory;
+    private ImageButton lockPhoto;
     private ImageButton camera;
     private ImageView picImageView;
     private String absolutePath;
@@ -109,6 +110,8 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
         socialSharePhoto.setOnClickListener(this);
         createstory = (ImageButton)root.findViewById(R.id.create_story);
         createstory.setOnClickListener(this);
+        lockPhoto = (ImageButton)root.findViewById(R.id.lock_photo);
+        lockPhoto.setOnClickListener(this);
 
     }
 
@@ -145,6 +148,12 @@ public class FragmentMemories extends Fragment implements View.OnClickListener {
                 //createstory(imageUrl);
 
                 break;
+            case R.id.lock_photo:
+                ((MainActivity)getActivity()).setAbsolutePath(absolutePath);
+                //uploadImage2();
+                ((MainActivity)getActivity()).fromMemoryToLockphoto();
+                break;
+
             case R.id.camera:
                 fromMainToCamera();
             default:

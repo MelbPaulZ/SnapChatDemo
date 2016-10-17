@@ -42,6 +42,10 @@ public interface UserApi {
     Call<ArrayList<PhotoStory>> createstory(@Query("id") String id, @Query("uploadImg") String uploadImg,
                                             @Query("isSecret") String isSecret, @Query("story_text") String story_text,
                                             @Query("method") String method);
+    //this is for lock photo
+    @PUT("lockphoto.php?")
+    Call<ArrayList<PhotoStory>> lockphoto(@Query("id") String id, @Query("downloadUrl") String downloadUrl,
+                                            @Query("password") String password, @Query("method") String method);
 
     //this is for agree add friend request
     @PUT("addedmeagree.php?")
@@ -51,6 +55,10 @@ public interface UserApi {
     //this is for search friends by username
     @GET("searchusername.php?")
     Call<User> searchusername(@Query("username") String username, @Query("method") String method);
+
+    //this is for search secret photo by userid and secret
+    @GET("lockalbum.php?")
+    Call<ArrayList<PhotoStory>> lockalbum(@Query("id") String id, @Query("password") String password, @Query("method") String method);
 
     //this is for search friends by telephone number
     @GET("searchtelephone.php?")
