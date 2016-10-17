@@ -31,7 +31,7 @@ import java.util.Set;
 public class FragmentAddfriends extends Fragment implements View.OnClickListener {
     private View root;
     private Button buttonAddress;
-    private Button buttonNearby;
+    /*private Button buttonNearby;*/
     private Button buttonUsername;
     private Button buttonBackToUserscreen;
     private Button buttonShare;
@@ -59,13 +59,13 @@ public class FragmentAddfriends extends Fragment implements View.OnClickListener
     public void initAddfriends(){
         buttonAddress = (Button) root.findViewById(R.id.button_addressbook);
         buttonAddress.setOnClickListener(this);
-        buttonNearby = (Button) root.findViewById(R.id.button_nearby);
+/*        buttonNearby = (Button) root.findViewById(R.id.button_nearby);
         buttonNearby.setOnClickListener(this);
         //for android 6.0 users, you have to check the permission by using the following devices
         if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
-        }
+        }*/
         buttonUsername = (Button) root.findViewById(R.id.button_username);
         buttonUsername.setOnClickListener(this);
         buttonBackToUserscreen=(Button)root.findViewById(R.id.addfriendsBtBack);
@@ -80,9 +80,9 @@ public class FragmentAddfriends extends Fragment implements View.OnClickListener
             case R.id.button_addressbook:
                 ((MainActivity)getActivity()).fromAddfriendsToAddaddressbook();
                 break;
-            case R.id.button_nearby:
+/*            case R.id.button_nearby:
                 startBluetoothSensor();
-                break;
+                break;*/
             case R.id.button_username:
                 ((MainActivity)getActivity()).fromAddfriendsToAddusername();
                 break;

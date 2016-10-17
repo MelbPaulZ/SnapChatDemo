@@ -29,7 +29,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.api.PushMessageApi;
+import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
+import com.example.paul.snapchatdemo.bean.PushMessage;
 import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.firebase.FirebaseMessagingService;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
@@ -48,6 +51,7 @@ import com.example.paul.snapchatdemo.fragment.FragmentResultFriend;
 import com.example.paul.snapchatdemo.fragment.FragmentShowImageTimer;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
+import com.example.paul.snapchatdemo.utils.HttpUtil;
 import com.example.paul.snapchatdemo.utils.UserUtil;
 
 import java.io.File;
@@ -55,6 +59,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentMain fragmentMain;
@@ -67,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityPresenter presenter;
 
     public static boolean isAppCreated = false;
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private BroadcastReceiver chatMessageBroadcastReceiver;
     private FragmentResultFriend fragmentResultFriend;
     private FragmentAddedme fragmentAddedme;
     private FragmentResultAddedme fragmentResultAddedme;
@@ -84,6 +93,15 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<FriendPhone> friendPhoneList;
     private String imageUrl;
 
+    public String getAbsolutePath() {
+        return absolutePath;
+    }
+
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
+    }
+
+    private String absolutePath;
 
     public String getImageUrl() {
         return imageUrl;
@@ -152,40 +170,55 @@ public class MainActivity extends AppCompatActivity {
         presenter.getFriendStroy();
         initFragments();
 
-        // redirect to chat screen
+        // original
         getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentMain).commit();
-//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
-//        getFragmentManager().beginTransaction().show(fragmentChat).commit();
+
+        // verra: to test chat screen
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentShowImageTimer).commit();
+//        getSupportFragmentManager().beginTransaction().hide(fragmentShowImageTimer).commit();
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+
+        // verra: to test image editor
+//        getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
+//        getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
 
 
-//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentShowImageTimer).commit();
-//        getFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
-
-//        getFragmentManager().beginTransaction().add(R.id.main_frame, fragmentImageEditor).commit();
-//        getFragmentManager().beginTransaction().show(fragmentImageEditor).commit();
-
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+        chatMessageBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if(intent.getAction().equals(FirebaseMessagingService.REGISTRATION_SUCCESS)){
-
-                    Bundle extras = intent.getExtras();
-                    if(extras != null){
-                        String message = (String)extras.get("message");
-                        String message_type = (String)extras.get("message_type");
-                        if (message_type.equals("1")) {
-                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT);
-                        }
-                        else {
-                            fragmentChat.addMessageListItems(message,false, ChatMessageModel.MSG_TYPE_OTHER_IMG_VIEW);
-                        }
-                    }
-                }
-                else {
-
-                }
+                receiveChatMessage(intent);
             }
         };
+
+        //----------------------------------------------------------------------
+        //THIS IS TO TEST PULL MESSAGE QUEUE
+        //----------------------------------------------------------------------
+        final String senderUserId = "2";
+        // user is tapping the notificatin message,get all message from this sender.
+        final PushMessageApi pushMessageApi = HttpUtil.accessServerWithGson(PushMessageApi.class);
+        pushMessageApi.getMessageBySenderId(UserUtil.getId(), senderUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
+            @Override
+            public void onResponse(Call<ArrayList<PushMessage>> call, Response<ArrayList<PushMessage>> response) {
+                List<PushMessage> messageList = response.body();
+                for (PushMessage msg : messageList) {
+                    int timer = Integer.parseInt(msg.getChatMessageTimer());
+                    putMessageToChatScreen(msg.getChatMessage(), msg.getChatMessageType(), timer);
+                }
+
+
+                // redirect to chat screen
+                initToChatScreen(senderUserId);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<PushMessage>> call, Throwable t) {
+                // do nothing
+                System.out.println("STILL ERRORRRRRRR.....................");
+                t.printStackTrace();
+
+            }
+        });
+        //----------------------------------------------------------------------
 
         // this is for chat screen
         isAppCreated = true;
@@ -255,6 +288,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void fromImageEditorToCreateStory(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).commit();
+        if (fragmentCreatestory.isAdded()){
+            getSupportFragmentManager().beginTransaction().show(fragmentCreatestory).commit();
+        }else{
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentCreatestory).commit();
+        }
+    }
+
     public void fromCameraToEditor(String path){
 
         fragmentImageEditor.imageCanvasBackgroundPath = path;
@@ -264,6 +306,13 @@ public class MainActivity extends AppCompatActivity {
         }else {
             getSupportFragmentManager().beginTransaction().show(fragmentImageEditor).commitAllowingStateLoss();
         }
+    }
+
+
+
+    public void fromEditorToCamera(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).show(fragmentCamera).commit();
+        checkPermission();
     }
 
 
@@ -301,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().hide(fragmentAddfriends).commit();
         if (fragmentAddaddressbook.isAdded()){
             getSupportFragmentManager().beginTransaction().show(fragmentAddaddressbook).commit();
-        }else{
+        }else {
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentAddaddressbook).commit();
         }
     }
@@ -351,11 +400,15 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().show(fragmentResultFriend).commit();
         }
         else{
-            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentResultFriend).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentResultFriend).commit();
         }
     }
 
-    public void fromImageEditorToSelectFriends(){
+    public void fromImageEditorToSelectFriends(String imageFilePath, String timer){
+        // file path to be sent to friends
+        fragmentFriendSelection.imageFilePath = imageFilePath;
+        fragmentFriendSelection.imageTimer = timer;
+
         getSupportFragmentManager().beginTransaction().hide(fragmentImageEditor).commit();
         if (!fragmentFriendSelection.isAdded()){
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentFriendSelection).commit();
@@ -375,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().show(fragmentAddedme).commit();
         }
         else{
-            getSupportFragmentManager().beginTransaction().add(R.id.main_frame,fragmentAddedme).commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentAddedme).commit();
         }
     }
 
@@ -492,20 +545,148 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().hide(fragmentFriendSelection).show(fragmentMain).commit();
     }
 
-    public void fromChatScreenToShowImage(){
+    public void fromChatScreenToShowImage(int messageTimer, String imageUrl, int messageIdx){
+        fragmentShowImageTimer.messageTimer = messageTimer;
+        fragmentShowImageTimer.imageUrl = imageUrl;
+        fragmentShowImageTimer.messageIdx = messageIdx;
 
+        getSupportFragmentManager().beginTransaction().hide(fragmentChat).commit();
+        getSupportFragmentManager().beginTransaction().show(fragmentShowImageTimer).commit();
+    }
+
+    public void fromShowImageToChatScreen(){
+        // update status of image that has been displayed
+        fragmentChat.updateDisplayedImageStatus(fragmentShowImageTimer.messageIdx);
+
+        getSupportFragmentManager().beginTransaction().hide(fragmentShowImageTimer).commit();
+        getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
+    }
+
+
+    public void contactToChatScreen(Friend friend){
+        fragmentChat.receiverUserId = friend.getId();
+
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
+        if (!fragmentChat.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+        }
+
+        getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
+    }
+
+    public void chatScreenToContact(){
+        getSupportFragmentManager().beginTransaction().hide(fragmentChat).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom).show(fragmentMain).commit();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
-                new IntentFilter(FirebaseMessagingService.REGISTRATION_SUCCESS));
+        LocalBroadcastManager.getInstance(this).registerReceiver(chatMessageBroadcastReceiver,
+                new IntentFilter(FirebaseMessagingService.RECEIVE_FIREBASE_CHAT_MESSAGE));
     }
     @Override
     protected void onPause(){
         super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(chatMessageBroadcastReceiver);
     }
 
+    private void receiveChatMessage(Intent intent) {
+        if(intent.getAction().equals(FirebaseMessagingService.RECEIVE_FIREBASE_CHAT_MESSAGE)){
+            Bundle extras = intent.getExtras();
+            if(extras != null){
+                String senderUserId = (String)extras.get("sender_user_id");
+                String chatMessage = (String)extras.get("chat_message");
+                String chatMessageType = (String)extras.get("chat_message_type");
+                String chatMessageTimer = (String)extras.get("chat_message_timer");
+                int messageTimer = Integer.parseInt(chatMessageTimer);
+
+                if (fragmentChat.isHidden()) {
+                    // user is not opening chat screen, keep the message on the queue on server.
+                    FirebaseMessagingService.pushMessageToQueue(UserUtil.getId(), senderUserId, chatMessage, chatMessageType, chatMessageTimer);
+                }
+                else {
+                    // check whether user is currently chatting with the sender.
+                    if (senderUserId.equals(fragmentChat.receiverUserId)) {
+                        putMessageToChatScreen(chatMessage, chatMessageType, messageTimer);
+
+                    }
+                    else {
+                        // user opening the chat screen, but not chatting with the sender.
+                        // keep the message on the queue on server
+                        FirebaseMessagingService.pushMessageToQueue(UserUtil.getId(), senderUserId, chatMessage, chatMessageType, chatMessageTimer);
+                    }
+                }
+            }
+        }
+    }
+
+    private void putMessageToChatScreen(String chatMessage, String chatMessageType, int messageTimer) {
+        // user is chatting with sender, show the message directly on chat screen
+        if (chatMessageType.equals(ChatMessageModel.MSG_DATA_TEXT)) {
+            // receive regular text
+            fragmentChat.addMessageListItems(chatMessage,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT, messageTimer);
+        }
+        else if (messageTimer!=0){
+            // receive a snap (image with timer)
+            fragmentChat.addMessageListItems(chatMessage,true, ChatMessageModel.MSG_TYPE_OTHER_IMG_TIMER_VIEW, messageTimer);
+        }
+        else {
+            // receive static image without timer
+            fragmentChat.addMessageListItems(chatMessage,true, ChatMessageModel.MSG_TYPE_OTHER_IMG, messageTimer);
+        }
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            final String senderUserId = (String) extras.get("sender_user_id");
+
+            // user is tapping the notificatin message,get all message from this sender.
+            PushMessageApi pushMessageApi = HttpUtil.accessServer(PushMessageApi.class);
+            pushMessageApi.getMessageBySenderId(UserUtil.getId(), senderUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
+                @Override
+                public void onResponse(Call<ArrayList<PushMessage>> call, Response<ArrayList<PushMessage>> response) {
+                    List<PushMessage> messageList = response.body();
+                    for (PushMessage msg : messageList) {
+                        int timer = Integer.parseInt(msg.getChatMessageTimer());
+                        putMessageToChatScreen(msg.getChatMessage(), msg.getChatMessageType(), timer);
+                    }
+
+                    // redirect to chat screen
+                    initToChatScreen(senderUserId);
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<PushMessage>> call, Throwable t) {
+                    // do nothing
+                    System.out.println("STILL ERRORRRRRRR.....................");
+                    t.printStackTrace();
+
+
+                }
+            });
+
+        }
+    }
+
+    private void initToChatScreen(String senderUserId) {
+        fragmentChat.receiverUserId = senderUserId;
+        getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
+        if (!fragmentChat.isAdded()){
+            getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
+        }
+        getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        // do nothing, all navigation are handled by app, this app doesnt support native back button navigation.
+
+    }
 }

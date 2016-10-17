@@ -1,5 +1,6 @@
 package com.example.paul.snapchatdemo.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,9 +9,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.paul.snapchatdemo.R;
+import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.manager.FriendManager;
 
@@ -25,6 +28,7 @@ public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
     private ArrayList<Friend> friendArrayList;
     private ArrayList<Friend> filteredArrayList = new ArrayList<>();
 
+    private RelativeLayout contactBox;
     private TextView nameTV;
     private TextView subTitle;
     private ImageView icon;
@@ -41,10 +45,19 @@ public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
 
 
     public View getView(int position, View convertView, ViewGroup parent){
-        Friend friend = getItem(position);
+        final Friend friend = getItem(position);
 
         // here can be set more
         View view = LayoutInflater.from(getContext()).inflate(resource, null );
+
+        contactBox = (RelativeLayout) view.findViewById(R.id.contact_box);
+        contactBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showChatScreen(friend);
+            }
+        });
+
         nameTV = (TextView) view.findViewById(R.id.name_tv);
         nameTV.setText(friend.getName());
 
@@ -57,6 +70,10 @@ public class FriendAdapter extends ArrayAdapter<Friend> implements Filterable{
         friendShipTV = (TextView) view.findViewById(R.id.friendship_time);
         friendShipTV.setText(FriendManager.getInstance().friendShipTime(friend.getAddFriendTime()));
         return view;
+    }
+
+    private void showChatScreen(Friend friend) {
+        ((MainActivity)(Activity) getContext()).contactToChatScreen(friend);
     }
 
     public String getStatus(Friend friend){
