@@ -27,11 +27,14 @@ import android.widget.TextView;
 import com.example.paul.snapchatdemo.R;
 import com.example.paul.snapchatdemo.activity.MainActivity;
 import com.example.paul.snapchatdemo.api.ChatApi;
+import com.example.paul.snapchatdemo.api.PushMessageApi;
+import com.example.paul.snapchatdemo.bean.PushMessage;
 import com.example.paul.snapchatdemo.bean.User;
 import com.example.paul.snapchatdemo.chat.ChatMessageAdapter;
 import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.chat.ImageGaleryAdapter;
 import com.example.paul.snapchatdemo.utils.HttpUtil;
+import com.example.paul.snapchatdemo.utils.UserUtil;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -89,9 +92,11 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     private StorageReference mStorageRef;
 
     private String senderUserId;
-    public String receiverUserId;
+    private String receiverUserId;
 
     private ImageButton backToContactButton;
+
+    private TextView friendNameTextView;
 
     @Override
     public void onSaveInstanceState(Bundle out) {
@@ -101,6 +106,8 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        friendNameTextView = (TextView)root.findViewById(R.id.friendNameTextView);
 
         backToContactButton = (ImageButton)root.findViewById(R.id.backToContactButton);
         backToContactButton.setOnClickListener(new View.OnClickListener() {
@@ -225,6 +232,7 @@ public class FragmentChat extends android.support.v4.app.Fragment {
     public void addMessageListItems(String input, boolean isImageURL, int messageType, int messageTimer){
         ChatMessageModel chatMessage;
         int messageIdx = 0;
+
         if (chatMessageList.size()!=0) {
             messageIdx = chatMessageList.size();
         }
@@ -356,5 +364,54 @@ public class FragmentChat extends android.support.v4.app.Fragment {
         chatMessageList.remove(messageIdx);
         chatMessageList.add(messageIdx, chm);
         chatMessageAdapter.notifyDataSetChanged();
+    }
+
+    private void putMessageToChatScreen(String chatMessage, String chatMessageType, int messageTimer) {
+        // user is chatting with sender, show the message directly on chat screen
+        if (chatMessageType.equals(ChatMessageModel.MSG_DATA_TEXT)) {
+            // receive regular text
+            addMessageListItems(chatMessage,false, ChatMessageModel.MSG_TYPE_OTHER_TEXT, messageTimer);
+        }
+        else if (messageTimer!=0){
+            // receive a snap (image with timer)
+            addMessageListItems(chatMessage,true, ChatMessageModel.MSG_TYPE_OTHER_IMG_TIMER_VIEW, messageTimer);
+        }
+        else {
+            // receive static image without timer
+            addMessageListItems(chatMessage,true, ChatMessageModel.MSG_TYPE_OTHER_IMG, messageTimer);
+        }
+    }
+
+    public void pullMessageFromQueue() {
+        final PushMessageApi pushMessageApi = HttpUtil.accessServerWithGson(PushMessageApi.class);
+        pushMessageApi.getMessageBySenderId(UserUtil.getId(), senderUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
+            @Override
+            public void onResponse(Call<ArrayList<PushMessage>> call, Response<ArrayList<PushMessage>> response) {
+                List<PushMessage> messageList = response.body();
+                for (PushMessage msg : messageList) {
+                    int timer = Integer.parseInt(msg.getChatMessageTimer());
+                    putMessageToChatScreen(msg.getChatMessage(), msg.getChatMessageType(), timer);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<PushMessage>> call, Throwable t) {
+                // do nothing
+                System.out.println("ERROR: Cannot get message queue");
+                t.printStackTrace();
+
+            }
+        });
+    }
+
+
+
+    public void setFriend(String userId, String name){
+        receiverUserId = userId;
+        friendNameTextView.setText(name);
+    }
+
+    public boolean isChattingWithUser(String userId) {
+        return receiverUserId.equals(userId);
     }
 }

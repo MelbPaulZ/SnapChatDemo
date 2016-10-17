@@ -7,17 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -25,15 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
-import com.example.paul.snapchatdemo.api.PushMessageApi;
 import com.example.paul.snapchatdemo.bean.Friend;
 import com.example.paul.snapchatdemo.bean.FriendPhone;
 import com.example.paul.snapchatdemo.bean.PhotoStory;
-import com.example.paul.snapchatdemo.bean.PushMessage;
 import com.example.paul.snapchatdemo.chat.ChatMessageModel;
 import com.example.paul.snapchatdemo.firebase.FirebaseMessagingService;
 import com.example.paul.snapchatdemo.fragment.FragmentAddaddressbook;
@@ -54,19 +40,9 @@ import com.example.paul.snapchatdemo.fragment.FragmentSecretalbum;
 import com.example.paul.snapchatdemo.fragment.FragmentShowImageTimer;
 import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
-import com.example.paul.snapchatdemo.utils.HttpUtil;
 import com.example.paul.snapchatdemo.utils.UserUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentMain fragmentMain;
@@ -204,36 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 receiveChatMessage(intent);
             }
         };
-
-        //----------------------------------------------------------------------
-        //THIS IS TO TEST PULL MESSAGE QUEUE
-        //----------------------------------------------------------------------
-        final String senderUserId = "2";
-        // user is tapping the notificatin message,get all message from this sender.
-        final PushMessageApi pushMessageApi = HttpUtil.accessServerWithGson(PushMessageApi.class);
-        pushMessageApi.getMessageBySenderId(UserUtil.getId(), senderUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
-            @Override
-            public void onResponse(Call<ArrayList<PushMessage>> call, Response<ArrayList<PushMessage>> response) {
-                List<PushMessage> messageList = response.body();
-                for (PushMessage msg : messageList) {
-                    int timer = Integer.parseInt(msg.getChatMessageTimer());
-                    putMessageToChatScreen(msg.getChatMessage(), msg.getChatMessageType(), timer);
-                }
-
-
-                // redirect to chat screen
-                initToChatScreen(senderUserId);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<PushMessage>> call, Throwable t) {
-                // do nothing
-                System.out.println("STILL ERRORRRRRRR.....................");
-                t.printStackTrace();
-
-            }
-        });
-        //----------------------------------------------------------------------
 
         // this is for chat screen
         isAppCreated = true;
@@ -613,7 +559,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void contactToChatScreen(Friend friend){
-        fragmentChat.receiverUserId = friend.getId();
+        fragmentChat.setFriend(friend.getId(), friend.getName());
 
         getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
         if (!fragmentChat.isAdded()){
@@ -656,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else {
                     // check whether user is currently chatting with the sender.
-                    if (senderUserId.equals(fragmentChat.receiverUserId)) {
+                    if (fragmentChat.isChattingWithUser(senderUserId)) {
                         putMessageToChatScreen(chatMessage, chatMessageType, messageTimer);
 
                     }
@@ -693,42 +639,21 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            final String senderUserId = (String) extras.get("sender_user_id");
+            String senderUserId = (String) extras.get("sender_user_id");
+            String sender = (String) extras.get("sender");
 
-            // user is tapping the notificatin message,get all message from this sender.
-            PushMessageApi pushMessageApi = HttpUtil.accessServer(PushMessageApi.class);
-            pushMessageApi.getMessageBySenderId(UserUtil.getId(), senderUserId).enqueue(new Callback<ArrayList<PushMessage>>() {
-                @Override
-                public void onResponse(Call<ArrayList<PushMessage>> call, Response<ArrayList<PushMessage>> response) {
-                    List<PushMessage> messageList = response.body();
-                    for (PushMessage msg : messageList) {
-                        int timer = Integer.parseInt(msg.getChatMessageTimer());
-                        putMessageToChatScreen(msg.getChatMessage(), msg.getChatMessageType(), timer);
-                    }
-
-                    // redirect to chat screen
-                    initToChatScreen(senderUserId);
-                }
-
-                @Override
-                public void onFailure(Call<ArrayList<PushMessage>> call, Throwable t) {
-                    // do nothing
-                    System.out.println("STILL ERRORRRRRRR.....................");
-                    t.printStackTrace();
-
-
-                }
-            });
-
+            // redirect to chat screen
+            initToChatScreen(senderUserId, sender);
         }
     }
 
-    private void initToChatScreen(String senderUserId) {
-        fragmentChat.receiverUserId = senderUserId;
+    private void initToChatScreen(String senderUserId, String sender) {
+        fragmentChat.setFriend(senderUserId, sender);
         getSupportFragmentManager().beginTransaction().hide(fragmentMain).commit();
         if (!fragmentChat.isAdded()){
             getSupportFragmentManager().beginTransaction().add(R.id.main_frame, fragmentChat).commit();
         }
+        fragmentChat.pullMessageFromQueue();
         getSupportFragmentManager().beginTransaction().show(fragmentChat).commit();
     }
 
