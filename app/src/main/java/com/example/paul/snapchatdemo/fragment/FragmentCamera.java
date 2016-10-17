@@ -66,10 +66,13 @@ public class FragmentCamera extends Fragment implements ActivityCompat.OnRequest
     }
 
 
+
+
     public void getResult(Intent data){
         Bitmap bmp = (Bitmap) data.getExtras().get("data");
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
+        assert bmp != null;
         bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
 

@@ -8,10 +8,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -20,6 +25,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.paul.snapchatdemo.R;
@@ -44,7 +50,11 @@ import com.example.paul.snapchatdemo.fragment.FragmentUserscreen;
 import com.example.paul.snapchatdemo.presenter.MainActivityPresenter;
 import com.example.paul.snapchatdemo.utils.UserUtil;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentMain fragmentMain;
@@ -73,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     private String friend_userid;
     private ArrayList<FriendPhone> friendPhoneList;
     private String imageUrl;
+
 
     public String getImageUrl() {
         return imageUrl;
@@ -204,10 +215,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case FragmentCamera.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent,
                             FragmentCamera.CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);

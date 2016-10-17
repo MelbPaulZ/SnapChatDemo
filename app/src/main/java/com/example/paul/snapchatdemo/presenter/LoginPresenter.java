@@ -67,7 +67,6 @@ public class LoginPresenter {
         userApi.register(Token.generateToken(), username, password).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-
                 Toast.makeText(context, "Registration successful, please login", Toast.LENGTH_SHORT).show();
             }
 
