@@ -57,8 +57,8 @@ public class FragmentResultFriend extends Fragment implements View.OnClickListen
         addFriend = (Button) root.findViewById(R.id.add_button);
         friendName = (TextView) root.findViewById(R.id.friend_name);
         backToUserscreen =(Button)root.findViewById(R.id.resultFriendBtBack);
-        String friendUsername= ((MainActivity)getActivity()).getFriendUsername();
-        friendName.setText(friendUsername);
+        //String friend= ((MainActivity)getActivity()).getFriendUsername();
+        friendName.setText("Are you sure to add him/her");
         addFriend.setOnClickListener(this);
         backToUserscreen.setOnClickListener(this);
     }
@@ -72,25 +72,33 @@ public class FragmentResultFriend extends Fragment implements View.OnClickListen
                 friendId=((MainActivity)getActivity()).getFriend_userid();
                 friendUsername=((MainActivity)getActivity()).getFriendUsername();
 
-                Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "sending request...", Toast.LENGTH_SHORT).show();
+                if(id.equals(friendId)==false) {
 
-                // get remote service
-                UserApi userApi = HttpUtil.accessServer(UserApi.class);
+                    Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "sending request...", Toast.LENGTH_SHORT).show();
 
-                // this is for getting data back, asynchronous doing this task
-                userApi.addusername(id,username,friendId,friendUsername, C.methods.METHOD_ADDUSERNAME).enqueue(new Callback<Friendship>() {
-                    @Override
-                    public void onResponse(Call<Friendship> call, Response<Friendship> response) {
-                        Log.i(TAG, "onResponse: " + response.body().toString());
-                        Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "send successfully", Toast.LENGTH_SHORT).show();
+                    // get remote service
+                    UserApi userApi = HttpUtil.accessServer(UserApi.class);
 
-                    }
+                    // this is for getting data back, asynchronous doing this task
+                    userApi.addusername(id, username, friendId, friendUsername, C.methods.METHOD_ADDUSERNAME).enqueue(new Callback<Friendship>() {
+                        @Override
+                        public void onResponse(Call<Friendship> call, Response<Friendship> response) {
+                            Log.i(TAG, "onResponse: " + response.body().toString());
+                            Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "send adding request successfully", Toast.LENGTH_SHORT).show();
 
-                    @Override
-                    public void onFailure(Call<Friendship> call, Throwable t) {
-                        Log.i(TAG, "onFailure: " + "userApi failure");
-                    }
-                });
+                        }
+
+                        @Override
+                        public void onFailure(Call<Friendship> call, Throwable t) {
+                            Log.i(TAG, "onFailure: " + "userApi failure");
+                            Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "You have already added him/her", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                else{
+                    Toast.makeText(FragmentResultFriend.this.getActivity().getBaseContext(), "You cannot add yourself", Toast.LENGTH_SHORT).show();
+                }
 
                 break;
             case R.id.resultFriendBtBack:

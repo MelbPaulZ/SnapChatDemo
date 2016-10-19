@@ -55,8 +55,8 @@ public class FragmentResultAddedme extends Fragment implements View.OnClickListe
         addFriend = (Button) root.findViewById(R.id.add_button);
         friendName = (TextView) root.findViewById(R.id.friend_name);
         backToAddedme = (Button)root.findViewById(R.id.resultFriendBtBack);
-        String friendUsername= ((MainActivity)getActivity()).getFriendUsername();
-        friendName.setText(friendUsername);
+        //String friend= ((MainActivity)getActivity()).getFriendUsername();
+        friendName.setText("Are you sure to agree his/her request");
         addFriend.setOnClickListener(this);
         backToAddedme.setOnClickListener(this);
     }
@@ -87,7 +87,7 @@ public class FragmentResultAddedme extends Fragment implements View.OnClickListe
                     @Override
                     public void onFailure(Call<Friendship> call, Throwable t) {
                         Log.i(TAG, "onFailure: " + "userApi failure");
-                        Toast.makeText(FragmentResultAddedme.this.getActivity().getBaseContext(), "sorry, something wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(FragmentResultAddedme.this.getActivity().getBaseContext(), "You have already added him/her", Toast.LENGTH_SHORT).show();
                     }
                 });
 

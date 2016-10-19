@@ -108,6 +108,7 @@ public class FragmentAddaddressbook extends Fragment implements View.OnClickList
                     // get remote service
                     UserApi userApi = HttpUtil.accessServer(UserApi.class);
 
+
                     // this is for getting data back, asynchronous doing this task
                     userApi.searchtelephone(telephone, C.methods.METHOD_SEARCHTELEPHONE).enqueue(new Callback<User>() {
                         @Override
