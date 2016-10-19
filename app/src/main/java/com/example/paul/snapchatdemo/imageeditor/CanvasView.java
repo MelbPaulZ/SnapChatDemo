@@ -47,6 +47,13 @@ public class CanvasView extends View {
 		mPaint.setStrokeWidth(10f);
 	}
 
+	public void resetAllDraw() {
+		for (Path path : pathList) {
+			path.reset();
+		}
+		pathList.clear();
+	}
+
 	// override onSizeChanged
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {

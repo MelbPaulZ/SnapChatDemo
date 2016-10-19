@@ -123,6 +123,42 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
 
     private StorageReference mStorageRef;
 
+    boolean isFragmentCreated = false;
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+
+        if (!hidden && isFragmentCreated){
+            // screen is shown
+            imageCanvas = (CanvasView) root.findViewById(R.id.imageCanvas);
+            imageCanvas.setDrawingCacheEnabled(true);
+
+            Bitmap workingBitmap = BitmapFactory.decodeFile(imageCanvasBackgroundPath);
+            BitmapDrawable ob = new BitmapDrawable(getResources(), workingBitmap);
+            imageCanvas.setBackground(ob);
+
+            // reset text
+            imageInputText = (EditText) root.findViewById(R.id.imageInputText);
+            imageInputText.setText("");
+            disableTextEditMode();
+
+            // reset hand drawing
+            CanvasView content = (CanvasView)root.findViewById(R.id.imageCanvas);
+            content.resetAllDraw();
+            disableHandDrawMode();
+
+            // reset emoji
+            for (String key : imageIcons.keySet()) {
+                int id = Integer.parseInt(key);
+                ImageView imageIcon = (ImageView)imageEditorRoot.findViewById(id);
+                imageEditorRoot.removeView(imageIcon);
+            }
+            imageIcons.clear();
+            disableEmojiMode();
+        }
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -258,6 +294,8 @@ public class FragmentImageEditor extends android.support.v4.app.Fragment {
 
         sendToFriendsButton = (ImageButton) root.findViewById(R.id.sendToFriendsButton);
         sendToFriendsButton.setOnClickListener(sendImageToFriend());
+
+        isFragmentCreated = true;
     }
 
     private void initEmojiGrid() {
