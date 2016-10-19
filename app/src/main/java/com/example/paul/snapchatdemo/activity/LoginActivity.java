@@ -82,6 +82,10 @@ public class LoginActivity  extends AppCompatActivity{
 
         // if server response data successfully, start main activity
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        //Bundle b = new Bundle();
+        //b.putString("password", passWord);
+        //此处使用putExtras，接受方就响应的使用getExtra
+        //intent.putExtras( b );
         startActivity(intent);
     }
 }

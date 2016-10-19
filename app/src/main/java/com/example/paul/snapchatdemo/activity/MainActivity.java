@@ -74,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
     private String friend_userid;
     private ArrayList<FriendPhone> friendPhoneList;
 
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    private String password;
+
     public ArrayList<PhotoStory> getPhotoStory() {
         return photoStory;
     }
@@ -160,6 +171,8 @@ public class MainActivity extends AppCompatActivity {
         }
         presenter.setActivity(this);
         presenter.getFriendStroy();
+        //password = getIntent().getExtras().getString("password");
+        //System.out.println("password from MainActivity:"+password);
         initFragments();
 
         // original
